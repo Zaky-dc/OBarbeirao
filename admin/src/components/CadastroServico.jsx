@@ -8,9 +8,9 @@ export default function CadastroServico() {
   const [preview, setPreview] = useState(null);
   const [enviando, setEnviando] = useState(false);
 
-  const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
-  const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL || "https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
-  const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET || "whpm5cwd";
+  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+  const CLOUDINARY_URL ="https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
+  const UPLOAD_PRESET ="whpm5cwd";
 
   const handleSelecionar = (e) => {
     const file = e.target.files[0];
