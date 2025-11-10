@@ -7,7 +7,7 @@ export default function ListaServicos() {
   const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/servicos`).then((res) => setServicos(res.data));
+    axios.get(`${BASE_URL}/servicos`).then((res) => setServicos(res.data.dados || []));
   }, []);
 
   const apagarServico = async (id) => {
