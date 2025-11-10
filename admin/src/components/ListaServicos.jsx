@@ -6,18 +6,19 @@ export default function ListaServicos() {
   const [servicos, setServicos] = useState([]);
   const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
 
- useEffect(() => {
+useEffect(() => {
   axios
     .get(`${BASE_URL}/servicos`)
     .then((res) => {
       console.log("Resposta da API:", res.data);
-      setServicos(res.data.dados || []); // usa .dados se for o formato do backend
+      setServicos(Array.isArray(res.data) ? res.data : res.data.dados || []);
     })
     .catch((err) => {
       console.error("Erro ao buscar serviços:", err);
-      setServicos([]); // evita erro de map em caso de falha
+      setServicos([]);
     });
 }, []);
+
 
 
   const apagarServico = async (id) => {
@@ -32,7 +33,7 @@ export default function ListaServicos() {
         Serviços cadastrados
       </h2>
       <div className="grid gap-4">
-        {servicos.map((s) => (
+        {Array.isArray(servicos) && servicos.map((s) => (
           <div
             key={s._id}
             className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 bg-white dark:bg-slate-900 rounded-xl shadow border border-slate-200 dark:border-slate-700"
