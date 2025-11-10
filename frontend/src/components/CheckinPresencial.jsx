@@ -12,7 +12,7 @@ export default function CheckinPresencial() {
   const [checkinSelecionado, setCheckinSelecionado] = useState(null);
 
   const CHECKIN_URL = import.meta.env.VITE_CHECKIN_URL;
-  const BASE_URL = import.meta.env.VITE_API_URL;
+  const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
   const url = `${CHECKIN_URL}/checkin-presencial`;
 
   const buscarFila = async () => {

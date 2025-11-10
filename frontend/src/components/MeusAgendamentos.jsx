@@ -7,7 +7,7 @@ export default function MeusAgendamentos() {
   const [telefone, setTelefone] = useState("");
   const [agendamentos, setAgendamentos] = useState([]);
   
-  const BASE_URL = import.meta.env.VITE_API_URL;
+  const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
 
   const consultar = async () => {
     const numeroLimpo = telefone.replace(/\D/g, "");

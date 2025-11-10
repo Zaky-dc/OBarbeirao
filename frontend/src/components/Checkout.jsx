@@ -7,7 +7,7 @@ export default function Checkout({ carrinho, setCarrinho }) {
   const [telefone, setTelefone] = useState("");
   const [data, setData] = useState("");
   const [toast, setToast] = useState(null);
-  const BASE_URL = import.meta.env.VITE_API_URL;
+  const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
 
   const total = carrinho.reduce((acc, servico) => acc + servico.preco, 0);
 

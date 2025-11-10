@@ -6,7 +6,7 @@ import { Loader2 } from "lucide-react";
 export default function FilaPresencial() {
   const [fila, setFila] = useState([]);
   const [carregando, setCarregando] = useState(true);
-  const BASE_URL = import.meta.env.VITE_API_URL;
+  const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
   
 
   useEffect(() => {
