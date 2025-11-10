@@ -6,9 +6,19 @@ export default function ListaServicos() {
   const [servicos, setServicos] = useState([]);
   const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
 
-  useEffect(() => {
-    axios.get(`${BASE_URL}/servicos`).then((res) => setServicos(res.data.dados || []));
-  }, []);
+ useEffect(() => {
+  axios
+    .get(`${BASE_URL}/servicos`)
+    .then((res) => {
+      console.log("Resposta da API:", res.data);
+      setServicos(res.data.dados || []); // usa .dados se for o formato do backend
+    })
+    .catch((err) => {
+      console.error("Erro ao buscar serviços:", err);
+      setServicos([]); // evita erro de map em caso de falha
+    });
+}, []);
+
 
   const apagarServico = async (id) => {
     if (!confirm("Deseja realmente apagar este serviço?")) return;
