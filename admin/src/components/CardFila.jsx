@@ -11,8 +11,7 @@ export default function CardFila({
   const [servicos, setServicos] = useState(servicosIniciais || []);
   const [barbeiroSelecionado, setBarbeiroSelecionado] = useState("");
   const [modalAberto, setModalAberto] = useState(false);
-  const BASE_URL =
-    import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
+  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
 
   const handleFinalizar = async () => {
     if (!barbeiroSelecionado || servicos.length === 0) {
