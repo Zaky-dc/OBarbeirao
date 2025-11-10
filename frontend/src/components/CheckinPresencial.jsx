@@ -13,7 +13,7 @@ export default function CheckinPresencial() {
   const [checkinSelecionado, setCheckinSelecionado] = useState(null);
   const navigate = useNavigate();
 
-  const CHECKIN_URL = "https://o-barbeirao.vercel.app/checkin-presencial";
+  const CHECKIN_URL = "https://o-barbeirao.vercel.app/";
   const BASE_URL = "https://o-barbeirao-back.vercel.app/api";
   const url = `${CHECKIN_URL}/checkin-presencial`;
 
