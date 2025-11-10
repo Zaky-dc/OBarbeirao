@@ -5,8 +5,16 @@ import tailwindcss from "@tailwindcss/vite"
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
-  server:{
-    allowedHosts: ['f9f89f72ba29.ngrok-free.app'],
+  build: {
+    target: 'es2020',     // Compatível com navegadores modernos
+    outDir: 'dist',        // Pasta de saída padrão
+    sourcemap: false       // Pode ativar para debugging
   },
-
-})
+  server: {
+    port: 5173,            // Porta local
+    open: true             // Abre navegador automaticamente
+  },
+  define: {
+    'process.env': {}      // Evita erro com libs que usam process.env
+  }
+});

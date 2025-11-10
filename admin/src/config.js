@@ -1,0 +1,6 @@
+const API_BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:3001/api"
+    : "https://o-barbeirao-back.vercel.app/api";
+
+export default API_BASE_URL;
