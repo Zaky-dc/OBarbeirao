@@ -4,7 +4,8 @@ import axios from "axios";
 export default function Catalogo({ carrinho, setCarrinho }) {
   const [servicos, setServicos] = useState([]);
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
-  const BASE_URL = import.meta.env.VITE_API_URL;
+  //const BASE_URL = import.meta.env.VITE_API_URL;
+  const BASE_URL = "https://o-barbeirao-back.vercel.app/api";
 
   useEffect(() => {
     axios
