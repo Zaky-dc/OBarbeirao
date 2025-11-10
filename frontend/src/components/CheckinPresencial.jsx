@@ -3,6 +3,7 @@ import axios from "axios";
 import QRCode from "react-qr-code";
 import { showToast } from "../components/toastManager";
 import ModalServicosCliente from "../components/ModalServicosCliente";
+import { useNavigate } from "react-router-dom";
 
 export default function CheckinPresencial() {
   const [nome, setNome] = useState("");
@@ -10,9 +11,10 @@ export default function CheckinPresencial() {
   const [fila, setFila] = useState([]);
   const [modalAberto, setModalAberto] = useState(false);
   const [checkinSelecionado, setCheckinSelecionado] = useState(null);
+  const navigate = useNavigate();
 
   const CHECKIN_URL = import.meta.env.VITE_CHECKIN_URL;
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+  const BASE_URL = "https://o-barbeirao-back.vercel.app/api";
   const url = `${CHECKIN_URL}/checkin-presencial`;
 
   const buscarFila = async () => {
@@ -113,9 +115,7 @@ export default function CheckinPresencial() {
                   {/* Botões de ação */}
                   <div className="flex gap-3">
                     <button
-                      onClick={() =>
-                        (window.location.href = "/meus-agendamentos")
-                      }
+                      onClick={() => navigate("/meus-agendamentos")}
                       className="text-red-400 underline hover:text-red-300"
                     >
                       Cancelar
