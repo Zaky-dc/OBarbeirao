@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import BASE_URL from "../config";
 
 export default function Relatorio() {
   const [filtros, setFiltros] = useState({
@@ -18,7 +19,7 @@ export default function Relatorio() {
     });
 
     axios
-      .get(`http://localhost:3000/atendimentos/relatorio?${params.toString()}`)
+      .get(`${BASE_URL}/atendimentos/relatorio?${params.toString()}`)
       .then((res) => setResultados(res.data))
       .catch((err) => console.error("Erro ao buscar relatório:", err));
   };

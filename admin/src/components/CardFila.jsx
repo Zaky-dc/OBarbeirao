@@ -11,6 +11,8 @@ export default function CardFila({
   const [servicos, setServicos] = useState(servicosIniciais || []);
   const [barbeiroSelecionado, setBarbeiroSelecionado] = useState("");
   const [modalAberto, setModalAberto] = useState(false);
+  const BASE_URL =
+    import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
 
   const handleFinalizar = async () => {
     if (!barbeiroSelecionado || servicos.length === 0) {
@@ -30,11 +32,11 @@ export default function CardFila({
       servicos,
     };
 
-    
     try {
       console.log("Payload enviado:", payload);
-      await axios.post("http://localhost:3000/atendimentos", payload);
-      await axios.delete(`http://localhost:3000/checkin/${cliente._id}`);
+      await axios.post(`${BASE_URL}/atendimentos`, payload);
+      await axios.delete(`${BASE_URL}/checkin/${cliente._id}`);
+
       onAtendimentoFinalizado(cliente._id);
     } catch (err) {
       console.error("Erro ao finalizar atendimento:", err);
