@@ -17,12 +17,12 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB conectado"))
   .catch(err => console.error("Erro ao conectar:", err));
 
-app.use("/servicos", servicoRoutes);
-app.use("/checkin", require("../routes/checkin"));
-app.use("/admin", adminRoutes);
-app.use("/atendimentos", atendimentoRoutes);
-app.use("/barbeiros", barbeiroRoutes);
-app.use("/", searchRoutes);
+app.use("/api/servicos", servicoRoutes);
+app.use("/api/checkin", require("../routes/checkin"));
+app.use("/api/admin", adminRoutes);
+app.use("/api/atendimentos", atendimentoRoutes);
+app.use("/api/barbeiros", barbeiroRoutes);
+app.use("/api/", searchRoutes);
 //  app.listen(3000)
 // ✅ ADD:
 module.exports = app;
