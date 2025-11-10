@@ -5,10 +5,12 @@ import CardFila from "../components/CardFila";
 export default function Fila() {
   const [checkins, setCheckins] = useState([]);
   const [barbeiros, setBarbeiros] = useState([]);
+    const BASE_URL =
+    import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
 
   // Buscar fila de clientes
   useEffect(() => {
-  axios.get("http://localhost:3000/checkin/fila-presencial")
+  axios.get(`${BASE_URL}/checkin/fila-presencial`)
     .then(res => {
       console.log("Checkins recebidos:", res.data);
      setCheckins(res.data.dados)
@@ -18,7 +20,7 @@ export default function Fila() {
 
   // Buscar barbeiros disponíveis
   useEffect(() => {
-    axios.get("http://localhost:3000/barbeiros")
+    axios.get(`${BASE_URL}/barbeiros`)
       .then(res => setBarbeiros(res.data))
       .catch(err => console.error("Erro ao buscar barbeiros:", err));
   }, []);
