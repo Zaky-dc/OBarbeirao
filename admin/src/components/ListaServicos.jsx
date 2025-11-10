@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function ListaServicos() {
   const [servicos, setServicos] = useState([]);
-  const BASE_URL = import.meta.env.VITE_API_URL;
+  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
 
   useEffect(() => {
     axios.get(`${BASE_URL}/servicos`).then((res) => setServicos(res.data));
