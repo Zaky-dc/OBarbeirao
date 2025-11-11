@@ -5,9 +5,10 @@ import axios from "axios";
 export default function EditarServico() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
-  const CLOUDINARY_URL ="https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
-  const UPLOAD_PRESET ="whpm5cwd";
+  const BASE_URL = "https://o-barbeirao-back.vercel.app/api";
+  const CLOUDINARY_URL =
+    "https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
+  const UPLOAD_PRESET = "whpm5cwd";
 
   const [servico, setServico] = useState(null);
   const [imagem, setImagem] = useState(null);
@@ -16,8 +17,11 @@ export default function EditarServico() {
 
   useEffect(() => {
     axios.get(`${BASE_URL}/servicos`).then((res) => {
-     // const encontrado = res.data.find((s) => s._id === id);
-     const encontrado = res.data.servicos.find((s) => s._id === id);
+      // const encontrado = res.data.find((s) => s._id === id);
+      const lista = Array.isArray(res.data.servicos)
+        ? res.data.servicos
+        : res.data;
+      const encontrado = lista.find((s) => s._id === id);
       if (encontrado) {
         setServico(encontrado);
         setPreview(encontrado.imageUrl);
