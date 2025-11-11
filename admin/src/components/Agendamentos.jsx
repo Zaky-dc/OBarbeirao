@@ -13,6 +13,7 @@ export default function Agendamentos() {
     (paginaAtual - 1) * itensPorPagina,
     paginaAtual * itensPorPagina
   );
+  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
 
   useEffect(() => {
     carregarAgendamentos();
@@ -20,14 +21,14 @@ export default function Agendamentos() {
 
   const carregarAgendamentos = () => {
     axios
-      .get("http://localhost:3000/checkin/agendamentos")
+      .get(`${BASE_URL}/checkin/agendamentos`)
       .then((res) => setAgendamentos(res.data))
       .catch((err) => console.error("Erro ao buscar agendamentos:", err));
   };
 
   const atualizarStatus = (id, status) => {
     axios
-      .patch(`http://localhost:3000/checkin/agendamentos/${id}`, { status })
+      .patch(`${BASE_URL}/checkin/agendamentos/${id}`, { status })
       .then(() => carregarAgendamentos())
       .catch((err) => console.error("Erro ao atualizar agendamento:", err));
   };
