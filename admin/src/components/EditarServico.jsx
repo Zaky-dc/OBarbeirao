@@ -5,9 +5,9 @@ import axios from "axios";
 export default function EditarServico() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const BASE_URL = import.meta.env.VITE_API_URL;
-  const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL;
-  const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET;
+  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+  const CLOUDINARY_URL ="https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
+  const UPLOAD_PRESET ="whpm5cwd";
 
   const [servico, setServico] = useState(null);
   const [imagem, setImagem] = useState(null);
@@ -16,7 +16,8 @@ export default function EditarServico() {
 
   useEffect(() => {
     axios.get(`${BASE_URL}/servicos`).then((res) => {
-      const encontrado = res.data.find((s) => s._id === id);
+     // const encontrado = res.data.find((s) => s._id === id);
+     const encontrado = res.data.servicos.find((s) => s._id === id);
       if (encontrado) {
         setServico(encontrado);
         setPreview(encontrado.imageUrl);
