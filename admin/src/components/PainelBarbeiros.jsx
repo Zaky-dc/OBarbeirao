@@ -5,21 +5,22 @@ export default function PainelBarbeiros() {
   const [barbeiros, setBarbeiros] = useState([]);
   const [form, setForm] = useState({ nome: "", contacto: "", taxaComissao: 0.3 });
   const [editandoId, setEditandoId] = useState(null);
+  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
 
   useEffect(() => {
     carregarBarbeiros();
   }, []);
 
   const carregarBarbeiros = () => {
-    axios.get("http://localhost:3000/barbeiros")
+    axios.get(`${BASE_URL}/barbeiros`)
       .then(res => setBarbeiros(res.data))
       .catch(err => console.error("Erro ao carregar barbeiros:", err));
   };
 
   const salvar = () => {
     const url = editandoId
-      ? `http://localhost:3000/barbeiros/${editandoId}`
-      : "http://localhost:3000/barbeiros";
+      ? `${BASE_URL}/${editandoId}`
+      : `${BASE_URL}/barbeiros`;
 
     const metodo = editandoId ? "put" : "post";
 
@@ -43,7 +44,7 @@ export default function PainelBarbeiros() {
 
   const excluir = (id) => {
     if (confirm("Deseja realmente excluir este barbeiro?")) {
-      axios.delete(`http://localhost:3000/barbeiros/${id}`)
+      axios.delete(`${BASE_URL}/barbeiros/${id}`)
         .then(() => carregarBarbeiros())
         .catch(err => console.error("Erro ao excluir barbeiro:", err));
     }
