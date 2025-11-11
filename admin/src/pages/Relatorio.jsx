@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import BASE_URL from "../config";
+
 
 export default function Relatorio() {
   const [filtros, setFiltros] = useState({
@@ -11,6 +11,7 @@ export default function Relatorio() {
     data: "",
   });
   const [resultados, setResultados] = useState([]);
+  const BASE_URL = "https://o-barbeirao-back.vercel.app/api";
 
   const buscar = () => {
     const params = new URLSearchParams();

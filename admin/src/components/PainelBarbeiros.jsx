@@ -18,20 +18,20 @@ export default function PainelBarbeiros() {
   };
 
   const salvar = () => {
-    const url = editandoId
-      ? `${BASE_URL}/${editandoId}`
-      : `${BASE_URL}/barbeiros`;
+  const url = editandoId
+    ? `${BASE_URL}/barbeiros/${editandoId}` // ✅ corrigido
+    : `${BASE_URL}/barbeiros`;
 
-    const metodo = editandoId ? "put" : "post";
+  const metodo = editandoId ? "put" : "post";
 
-    axios[metodo](url, form)
-      .then(() => {
-        setForm({ nome: "", contacto: "", taxaComissao: 0.3 });
-        setEditandoId(null);
-        carregarBarbeiros();
-      })
-      .catch(err => console.error("Erro ao salvar barbeiro:", err));
-  };
+  axios[metodo](url, form)
+    .then(() => {
+      setForm({ nome: "", contacto: "", taxaComissao: 0.3 });
+      setEditandoId(null);
+      carregarBarbeiros();
+    })
+    .catch(err => console.error("Erro ao salvar barbeiro:", err));
+};
 
   const editar = (b) => {
     setForm({
