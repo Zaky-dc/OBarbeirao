@@ -27,9 +27,17 @@ router.post("/", async (req, res) => {
 
 // PUT /servicos/:id
 router.put("/:id", async (req, res) => {
-  const { nome, preco, imageUrl } = req.body;
+  let { nome, preco, imageUrl } = req.body;
 
-  if (!nome && !preco && !imageUrl) {
+  // Validação de tipo
+  if (preco !== undefined) {
+    preco = Number(preco);
+    if (isNaN(preco)) {
+      return res.status(400).json({ erro: "Preço inválido." });
+    }
+  }
+
+  if (!nome && preco === undefined && !imageUrl) {
     return res.status(400).json({ erro: "Nenhum campo para atualizar." });
   }
 
@@ -38,7 +46,7 @@ router.put("/:id", async (req, res) => {
       req.params.id,
       {
         ...(nome && { nome }),
-        ...(preco && { preco }),
+        ...(preco !== undefined && { preco }),
         ...(imageUrl && { imageUrl }),
       },
       { new: true }
