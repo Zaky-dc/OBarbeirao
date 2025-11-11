@@ -5,9 +5,10 @@ export default function FechoMensal() {
   const [mes, setMes] = useState(new Date().getMonth() + 1);
   const [ano, setAno] = useState(new Date().getFullYear());
   const [resumo, setResumo] = useState([]);
+  const BASE_URL = "https://o-barbeirao-back.vercel.app/api";
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/barbeiros/fecho-mensal?mes=${mes}&ano=${ano}`)
+    axios.get(`${BASE_URL}/barbeiros/fecho-mensal?mes=${mes}&ano=${ano}`)
       .then(res => setResumo(res.data))
       .catch(err => console.error("Erro ao buscar fecho mensal:", err));
   }, [mes, ano]);
