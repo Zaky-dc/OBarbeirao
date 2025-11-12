@@ -21,8 +21,8 @@ export default function Footer() {
       {/* Contato */}
       <div className="space-y-2">
         <h4 className="text-amber-600 font-semibold mb-2">Contato</h4>
-        <a href="tel:84 682 4465" className="flex items-center gap-2 hover:text-amber-600">
-          <Phone className="w-5 h-5" /> 84 682 4465
+        <a href="tel:87 911 1730" className="flex items-center gap-2 hover:text-amber-600">
+          <Phone className="w-5 h-5" /> 87 911 1730
         </a>
         <a href="mailto:grupobarbeirao@gmail.com" className="flex items-center gap-2 hover:text-amber-600">
           <Mail className="w-5 h-5" /> grupobarbeirao@gmail.com
