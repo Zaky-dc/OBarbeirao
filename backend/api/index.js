@@ -14,28 +14,7 @@ const galeriaRoutes = require("../routes/galeria");
 
 const app = express();
 
-// Lista de origens permitidas (admin + cliente)
-const allowedOrigins = [
-  "https://www.barbeirao.com",          // cliente
-  "https://o-barbeirao-z8nt.vercel.app", // admin (Vercel)
-  "http://localhost:5173",              // dev cliente
-  "http://localhost:3000"               // dev admin
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // Permite requisições sem origin (ex.: curl, mobile apps)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error("CORS não permitido para esta origem"), false);
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  credentials: true
-}));
-
+app.use(cors());
 app.use(express.json());
 
 // Conexão MongoDB
