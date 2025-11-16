@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Scissors, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import BASE_URL from "../config";
 
 export default function LoginAdmin() {
   const [username, setUsername] = useState("");
@@ -11,7 +10,7 @@ export default function LoginAdmin() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const navigate = useNavigate();
   const { setLogado } = useAuth();
-  const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
+  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
 
   const handleLogin = async (e) => {
     e.preventDefault();
