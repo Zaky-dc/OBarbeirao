@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function PainelBarbeiros() {
-  const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL;
-  const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET;
+  const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
+  const UPLOAD_PRESET = "whpm5cwd";
 
   const [imagem, setImagem] = useState(null);
   const [preview, setPreview] = useState(null);
