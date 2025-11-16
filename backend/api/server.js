@@ -12,7 +12,11 @@ const galeriaRoutes = require("./routes/galeria");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://o-barbeirao-z8nt.vercel.app", // domínio do frontend
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI)
