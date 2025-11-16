@@ -9,8 +9,8 @@ const barbeiroRoutes = require("../routes/barbeiros");
 const searchRoutes = require("../routes/search");
 const servicoRoutes = require("../routes/servicos");
 const checkinRoutes = require("../routes/checkin");
-const pagamentosRoutes = require("./routes/pagamentos");
-const galeriaRoutes = require("./routes/galeria");
+const pagamentosRoutes = require("../routes/pagamentos");
+const galeriaRoutes = require("../routes/galeria");
 
 const app = express();
 
