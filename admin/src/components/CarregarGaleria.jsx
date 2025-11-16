@@ -8,7 +8,7 @@ export default function CarregarGaleria() {
 
   const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
    const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
-  const UPLOAD_PRESET = "whpm5cwd";
+  const CLOUDINARY_PRESET = "whpm5cwd";
 
   useEffect(() => {
     axios.get(`${BASE_URL}/galeria`)
