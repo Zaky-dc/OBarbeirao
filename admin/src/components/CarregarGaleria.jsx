@@ -7,8 +7,8 @@ export default function CarregarGaleria() {
   const [loading, setLoading] = useState(false); // estado de carregamento
 
   const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
-  const CLOUDINARY_URL = import.meta.env.VITE_CLOUDINARY_URL;
-  const CLOUDINARY_PRESET = import.meta.env.VITE_CLOUDINARY_PRESET;
+   const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
+  const UPLOAD_PRESET = "whpm5cwd";
 
   useEffect(() => {
     axios.get(`${BASE_URL}/galeria`)
