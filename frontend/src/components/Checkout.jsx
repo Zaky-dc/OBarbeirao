@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Toast from "./Toast";
 
@@ -6,49 +6,67 @@ export default function Checkout({ carrinho, setCarrinho }) {
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [data, setData] = useState("");
+  const [barbeiros, setBarbeiros] = useState([]);
+  const [barbeiroId, setBarbeiroId] = useState(null);
   const [toast, setToast] = useState(null);
-  const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
+  const [enviando, setEnviando] = useState(false);
 
-  const total = carrinho.reduce((acc, servico) => acc + servico.preco, 0);
+  const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
+  const total = carrinho.reduce((acc, s) => acc + s.preco, 0);
 
   const hoje = new Date();
   const hojeISO = hoje.toISOString().slice(0, 16);
-
   const limite = new Date();
   limite.setDate(limite.getDate() + 14);
   const limiteISO = limite.toISOString().slice(0, 16);
+
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/barbeiros`)
+      .then((res) => setBarbeiros(res.data))
+      .catch((err) => console.error("Erro ao carregar barbeiros:", err));
+  }, []);
 
   const handleSubmit = async () => {
     if (!nome || !telefone || !data || carrinho.length === 0) {
       setToast({ mensagem: "Preencha todos os campos!", tipo: "erro" });
       return;
     }
-  
+
+    const barbeiroSelecionado =
+      typeof barbeiroId === "string"
+        ? barbeiros.find((b) => b._id === barbeiroId) || null
+        : null;
+
     const payload = {
       nome,
-      telefone,
+      telefone: telefone.replace(/\D/g, ""),
       servicos: carrinho.map((s) => ({
         nome: s.nome,
         preco: s.preco,
         imageUrl: s.imageUrl,
       })),
-      horario: data, // ← adiciona a data como campo "horario"
+      horario: data,
+      barbeiro: barbeiroSelecionado,
+      origem: "online",
     };
-  
+
+    setEnviando(true);
     try {
-      const res = await axios.post(`${BASE_URL}/checkin`, payload);
-      console.log("Check-in registrado:", res.data);
+      await axios.post(`${BASE_URL}/checkin`, payload);
       setToast({ mensagem: "Agendamento confirmado!", tipo: "sucesso" });
       setCarrinho([]);
       setNome("");
       setTelefone("");
       setData("");
+      setBarbeiroId(null);
     } catch (err) {
       console.error("Erro ao registrar check-in:", err);
       setToast({ mensagem: "Erro ao agendar. Tente novamente.", tipo: "erro" });
+    } finally {
+      setEnviando(false);
     }
   };
-  
 
   return (
     <>
@@ -110,11 +128,50 @@ export default function Checkout({ carrinho, setCarrinho }) {
             </div>
           )}
 
+          {/* Seletor de barbeiro */}
+          <div className="mb-6 space-y-3">
+            <h3 className="text-sm text-amber-400 font-semibold">Escolha o barbeiro:</h3>
+            <div className="flex flex-wrap gap-3">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="barbeiro"
+                  value=""
+                  checked={barbeiroId === null}
+                  onChange={() => setBarbeiroId(null)}
+                />
+                <span className="text-white">Não tenho preferência</span>
+              </label>
+
+              {barbeiros.map((b) => {
+                const url = b.imageUrl.replace("/upload/", "/upload/q_auto,f_auto/");
+                return (
+                  <label key={b._id} className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="barbeiro"
+                      value={b._id}
+                      checked={barbeiroId === b._id}
+                      onChange={() => setBarbeiroId(b._id)}
+                    />
+                    <img
+                      src={url}
+                      alt={b.nome}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                    <span className="text-white">{b.nome}</span>
+                  </label>
+                );
+              })}
+            </div>
+          </div>
+
           <button
             onClick={handleSubmit}
-            className="w-full bg-amber-600 text-black font-bold py-3 rounded hover:bg-amber-700 transition"
+            disabled={enviando}
+            className="w-full bg-amber-600 text-black font-bold py-3 rounded hover:bg-amber-700 transition disabled:opacity-50"
           >
-            Confirmar Agendamento
+            {enviando ? "Enviando..." : "Confirmar Agendamento"}
           </button>
         </div>
       </section>

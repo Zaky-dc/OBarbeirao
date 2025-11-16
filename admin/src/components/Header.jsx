@@ -10,17 +10,37 @@ import { FaAngleDown } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSidebar } from "../context/SidebarContext";
+import { useEffect } from "react";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
   const { toggleSidebar } = useSidebar();
   const [query, setQuery] = useState("");
-
+   const [username, setUsername] = useState(""); 
+  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
+   useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch(`${BASE_URL}/admin/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = await res.json();
+        if (data.username) setUsername(data.username);
+      } catch (err) {
+        console.error("Erro ao buscar usuário:", err);
+      }
+    };
+    fetchUser();
+  }, []);
+
 
   const handleSearch = () => {
     if (!query.trim()) return;
@@ -93,13 +113,10 @@ const Header = () => {
                 className="w-8 h-8 rounded-full ring-2 ring-blue-500 object-cover"
               />
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
-                  Alde Nacoma
-                </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Admin
-                </p>
+                <p className="text-sm font-medium">{username || "Carregando..."}</p>
+                <p className="text-xs">Admin</p>
               </div>
+
               <FaAngleDown className="w-4 h-4 text-slate-400" />
             </button>
 

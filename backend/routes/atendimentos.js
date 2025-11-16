@@ -1,5 +1,4 @@
 const express = require("express");
-const mongoose = require("mongoose");
 const Atendimento = require("../models/Atendimento.js");
 
 const router = express.Router();
@@ -15,6 +14,7 @@ router.get("/", async (req, res) => {
   }
 });
 
+// GET /atendimentos/relatorio - gerar relatório com filtros
 router.get("/relatorio", async (req, res) => {
   try {
     const { nome, telefone, servico, barbeiro, data } = req.query;
@@ -39,7 +39,6 @@ router.get("/relatorio", async (req, res) => {
   }
 });
 
-
 // POST /atendimentos - registrar atendimento finalizado
 router.post("/", async (req, res) => {
   try {
@@ -53,7 +52,7 @@ router.post("/", async (req, res) => {
         telefone: cliente.telefone,
       },
       barbeiro: {
-        id: new mongoose.Types.ObjectId(barbeiro.id),
+        _id: barbeiro._id, // ✅ usa o _id real enviado pelo frontend
         nome: barbeiro.nome,
       },
       servicos,

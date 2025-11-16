@@ -92,30 +92,27 @@ router.patch("/:id", async (req, res) => {
 
 // 🔹 PATCH /checkin/:id/servicos → adicionar serviços completos ao check-in
 router.patch("/:id/servicos", async (req, res) => {
-  const { id } = req.params;
-  const { servicos } = req.body;
-
-  if (!Array.isArray(servicos) || servicos.length === 0) {
-    return res.status(400).json({ erro: "Serviços obrigatórios para atualizar o check-in." });
-  }
-
   try {
-    const checkin = await Checkin.findById(id);
+    const checkin = await Checkin.findById(req.params.id);
     if (!checkin) {
-      return res.status(404).json({ erro: "Check-in não encontrado." });
+      return res.status(404).json({ erro: "Check-in não encontrado" });
     }
 
-    // Atualiza os serviços diretamente com os objetos recebidos
-    checkin.servicos = servicos;
-    await checkin.save();
+    if (!Array.isArray(req.body.servicos)) {
+      return res.status(400).json({ erro: "Serviços inválidos" });
+    }
 
-    res.json({
-      mensagem: "Serviços adicionados com sucesso.",
-      dados: checkin,
-    });
+    checkin.servicos = req.body.servicos;
+
+    if (req.body.barbeiro) {
+      checkin.barbeiro = req.body.barbeiro; // ou req.body.barbeiro._id
+    }
+
+    await checkin.save();
+    res.json({ mensagem: "Serviços atualizados", dados: checkin });
   } catch (err) {
-    console.error("❌ Erro ao adicionar serviços ao check-in:", err);
-    res.status(500).json({ erro: "Falha ao adicionar serviços ao check-in." });
+    console.error("Erro ao atualizar serviços:", err);
+    res.status(500).json({ erro: "Erro interno ao salvar serviços" });
   }
 });
 

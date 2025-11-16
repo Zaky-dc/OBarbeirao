@@ -6,7 +6,7 @@ const atendimentoSchema = new mongoose.Schema({
     telefone: String,
   },
   barbeiro: {
-    id: mongoose.Schema.Types.ObjectId,
+     _id: mongoose.Schema.Types.ObjectId,
     nome: String,
   },
   servicos: [

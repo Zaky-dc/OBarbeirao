@@ -33,7 +33,7 @@ export default function Agendamentos() {
       .catch((err) => console.error("Erro ao atualizar agendamento:", err));
   };
 
-  return (
+ return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-800 dark:text-white">
         Agendamentos Online
@@ -62,17 +62,47 @@ export default function Agendamentos() {
         </button>
       </div>
 
-      {aba === "pendentes" && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {pendentes.map((a) => (
+     {aba === "pendentes" && (
+  <>
+    {pendentes.length === 0 ? (
+      <div className="text-center text-slate-500 dark:text-slate-400 italic py-10">
+        Nenhum agendamento pendente no momento.
+      </div>
+    ) : (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {pendentes.map((a) => {
+          console.log("🔍 Barbeiro recebido:", a.barbeiro);
+
+          return (
             <div
               key={a._id}
               className="bg-white dark:bg-slate-800 p-4 rounded shadow space-y-2"
             >
               <h2 className="text-lg font-bold">{a.nome}</h2>
-              <p>Telefone: {a.telefone}</p>
-              <p>Horário: {new Date(a.horario).toLocaleString()}</p>
-              <p>Serviços: {a.servicos.map((s) => s.nome).join(", ")}</p>
+              <p>Telefone: <div className="text-green-800 font-bold">{a.telefone}</div></p>
+              <p>Horário: <div className="font-semibold">{new Date(a.horario).toLocaleString()}</div></p>
+              <p>Serviços: <div className="font-semibold">{a.servicos.map((s) => s.nome).join(", ")}</div></p>
+              <p>Corte com:</p>
+
+              <div className="flex items-center gap-2 mt-2">
+                {a.barbeiro && typeof a.barbeiro === "object" ? (
+                  <>
+                    <img
+                      src={a.barbeiro.imageUrl}
+                      alt={a.barbeiro.nome}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                    <span className="text-sm text-slate-700 dark:text-slate-300">
+                      <div className="font-semibold">{a.barbeiro.nome}</div>
+                    </span>
+                  </>
+                ) : (
+                  <span className="italic text-sm text-slate-500">
+                    Sem preferência
+                  </span>
+                )}
+              </div>
+
               <div className="flex gap-2">
                 <button
                   onClick={() => atualizarStatus(a._id, "aprovado")}
@@ -88,9 +118,13 @@ export default function Agendamentos() {
                 </button>
               </div>
             </div>
-          ))}
-        </div>
-      )}
+          );
+        })}
+      </div>
+    )}
+  </>
+)}
+
 
       {aba === "historico" && (
         <div className="space-y-3 pr-2 md:pr-8 lg:pr-16 xl:pr-24">
@@ -101,6 +135,7 @@ export default function Agendamentos() {
                   <th className="p-2">Nome</th>
                   <th className="p-2">Telefone</th>
                   <th className="p-2">Horário</th>
+                  <th className="p-2">Barbeiro</th>
                   <th className="p-2">Serviços</th>
                   <th className="p-2">Status</th>
                 </tr>
@@ -123,7 +158,13 @@ export default function Agendamentos() {
                         hour12: false,
                       })}
                     </td>
-
+                    <td className="p-2">
+                      {a.barbeiro ? (
+                        a.barbeiro.nome
+                      ) : (
+                        <span className="italic text-slate-500">—</span>
+                      )}
+                    </td>
                     <td className="p-2">
                       {a.servicos.map((s) => s.nome).join(", ")}
                     </td>

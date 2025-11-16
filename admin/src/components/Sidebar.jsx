@@ -26,6 +26,7 @@ const Sidebar = () => {
     { id: "fila", icon: <MdOutlineShoppingBag />, label: "Fila de Clientes" },
     { id: "agendamentos", icon: <CiCalendarDate />, label: "Agendamentos" },
     { id: "servicos", icon: <LuPackage />, label: "Serviços" },
+    {id:"upload-galeria",icon:<FaPlus/>,label:"Carregar Imagem Galeria"},
     { id: "upload-servico", icon: <FaPlus />, label: "Cadastrar Serviço" },
     { id: "relatorio", icon: <IoBarChartOutline />, label: "Relatório" },
     { id: "barbeiros", icon: <FaRegUser />, label: "Stuff" },
@@ -37,7 +38,7 @@ const Sidebar = () => {
     <div
       className={clsx(
         "transition-all duration-300 ease-in-out bg-white/80 dark:bg-slate-900/80 border-r border-slate-200/50 dark:border-slate-700/50 flex flex-col relative z-10",
-        collapsed ? "w-24" : "w-68"
+        collapsed ? "w-20" : "w-64"
       )}
     >
       {/*Logo */}

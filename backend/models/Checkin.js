@@ -21,9 +21,13 @@ const CheckinSchema = new mongoose.Schema({
     {
       nome: { type: String, required: true },
       preco: { type: Number, required: true },
-      imageUrl: { type: String }, // ✅ agora compatível com ModalServicos
+      imageUrl: { type: String }, 
     }
   ],
+  barbeiro: {
+      type: mongoose.Schema.Types.Mixed, 
+      default: null,
+    },
 }, { timestamps: true });
 
 module.exports = mongoose.model("Checkin", CheckinSchema);

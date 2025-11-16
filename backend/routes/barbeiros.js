@@ -62,14 +62,21 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const { nome, contacto, taxaComissao } = req.body;
-    const novo = new Barbeiro({ nome, contacto, taxaComissao });
+    const { nome, contacto, taxaComissao, imageUrl } = req.body;
+
+    if (!imageUrl) {
+      return res.status(400).json({ erro: "URL da imagem é obrigatória" });
+    }
+
+    const novo = new Barbeiro({ nome, contacto, taxaComissao, imageUrl });
     await novo.save();
     res.status(201).json(novo);
   } catch (err) {
+    console.error("Erro ao cadastrar barbeiro:", err);
     res.status(500).json({ erro: "Erro ao cadastrar barbeiro" });
   }
 });
+
 
 router.put("/:id", async (req, res) => {
   try {

@@ -12,10 +12,11 @@ import EditarServico from "./components/EditarServico";
 import LoginAdmin from "./pages/LoginAdmin";
 import RotaProtegida from "./components/RotaProtegida";
 import { useAuth } from "./context/AuthContext";
-import FechoMensal from "./components/FechoMensal";
 import PainelBarbeiros from "./components/PainelBarbeiros";
 import Agendamentos from "./components/Agendamentos";
 import SearchPage from "./pages/SearchPage";
+import Fechamento from "./components/Fechamento";
+import CarregarGaleria from "./components/CarregarGaleria";
 
 export default function AppRoutes() {
   const { logado } = useAuth();
@@ -38,10 +39,11 @@ export default function AppRoutes() {
                       <Route path="fila" element={<Fila />} />
                       <Route path="relatorio" element={<Relatorio />} />
                       <Route path="upload-servico" element={<CadastroServico />} />
+                      <Route path="upload-galeria" element={<CarregarGaleria/>}/>
                       <Route path="servicos" element={<ListaServicos />} />
                       <Route path="editar-servico/:id" element={<EditarServico />} />
                       <Route path="barbeiros" element={<PainelBarbeiros/>}/>
-                      <Route path="fecho" element={<FechoMensal/>}/>
+                      <Route path="fecho" element={<Fechamento/>}/>
                       <Route path="agendamentos" element={<Agendamentos/>}/>
                       <Route path="/search" element={<SearchPage />} />
                     </Routes>

@@ -7,6 +7,8 @@ const atendimentoRoutes = require("../routes/atendimentos");
 const barbeiroRoutes = require("../routes/barbeiros");
 const searchRoutes = require("../routes/search");
 const servicoRoutes = require("../routes/servicos");
+const pagamentosRoutes = require("./routes/pagamentos");
+const galeriaRoutes = require("./routes/galeria");
 
 const app = express();
 
@@ -23,6 +25,8 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/atendimentos", atendimentoRoutes);
 app.use("/api/barbeiros", barbeiroRoutes);
 app.use("/api/", searchRoutes);
+app.use("/api/pagamentos", pagamentosRoutes);
+app.use("/api/galeria", galeriaRoutes);
 //  app.listen(3000)
 // ✅ ADD:
 module.exports = app;

@@ -6,11 +6,18 @@ import { showToast } from "./toastManager";
 export default function ModalServicosCliente({ checkin, fecharModal, BASE_URL }) {
   const [carrinho, setCarrinho] = useState([]);
   const [telefoneConfirmado, setTelefoneConfirmado] = useState("");
+  const [barbeiros, setBarbeiros] = useState([]);
+  const [barbeiroId, setBarbeiroId] = useState(null);
 
   useEffect(() => {
-    // Ao editar, começa com carrinho vazio
     setCarrinho([]);
     setTelefoneConfirmado("");
+    setBarbeiroId(null);
+
+    axios
+      .get(`${BASE_URL}/barbeiros`)
+      .then((res) => setBarbeiros(res.data))
+      .catch((err) => console.error("Erro ao carregar barbeiros:", err));
   }, [checkin]);
 
   const salvarServicos = async () => {
@@ -25,13 +32,19 @@ export default function ModalServicosCliente({ checkin, fecharModal, BASE_URL })
       imageUrl: s.imageUrl,
     }));
 
+    const barbeiroSelecionado =
+      typeof barbeiroId === "string"
+        ? barbeiros.find((b) => b._id === barbeiroId) || null
+        : null;
+
     try {
       await axios.patch(`${BASE_URL}/checkin/${checkin._id}/servicos`, {
         servicos: servicosCompletos,
+        barbeiro: barbeiroSelecionado,
       });
 
       showToast("Serviços atualizados com sucesso!", "sucesso");
-      fecharModal(); // fecha direto após salvar
+      fecharModal();
     } catch (err) {
       console.error("Erro ao salvar serviços:", err);
       showToast("Erro ao salvar serviços. Tente novamente.", "erro");
@@ -64,6 +77,37 @@ export default function ModalServicosCliente({ checkin, fecharModal, BASE_URL })
           </div>
         )}
 
+        <h4 className="text-sm font-semibold text-amber-400 mb-2">Escolha o barbeiro:</h4>
+        <div className="flex flex-wrap gap-3 mb-4">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="barbeiro"
+              value=""
+              checked={barbeiroId === null}
+              onChange={() => setBarbeiroId(null)}
+            />
+            <span className="text-gray-800">Sem preferência</span>
+          </label>
+
+          {barbeiros.map((b) => {
+            const url = b.imageUrl.replace("/upload/", "/upload/q_auto,f_auto/");
+            return (
+              <label key={b._id} className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="barbeiro"
+                  value={b._id}
+                  checked={barbeiroId === b._id}
+                  onChange={() => setBarbeiroId(b._id)}
+                />
+                <img src={url} alt={b.nome} className="w-8 h-8 rounded-full object-cover" />
+                <span className="text-gray-800">{b.nome}</span>
+              </label>
+            );
+          })}
+        </div>
+
         <div className="flex justify-between items-center pt-4 border-t">
           <p className="text-lg font-semibold text-gray-800">
             Total: {carrinho.reduce((soma, s) => soma + (s.preco || 0), 0)} MZN
@@ -90,4 +134,3 @@ export default function ModalServicosCliente({ checkin, fecharModal, BASE_URL })
     </div>
   );
 }
-

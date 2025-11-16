@@ -9,25 +9,25 @@ export default function CardFila({
   onAtendimentoFinalizado,
 }) {
   const [servicos, setServicos] = useState(servicosIniciais || []);
-  const [barbeiroSelecionado, setBarbeiroSelecionado] = useState("");
+  const [barbeiroSelecionado, setBarbeiroSelecionado] = useState(
+    cliente.barbeiro?._id || ""
+  );
   const [modalAberto, setModalAberto] = useState(false);
   const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
-
   const handleFinalizar = async () => {
     if (!barbeiroSelecionado || servicos.length === 0) {
       alert("Selecione pelo menos um serviço e um barbeiro.");
       return;
     }
 
+    const barbeiro = barbeiros.find((b) => b._id === barbeiroSelecionado);
+
     const payload = {
       cliente: {
         nome: cliente.nome,
         telefone: cliente.telefone,
       },
-      barbeiro: {
-        id: barbeiroSelecionado,
-        nome: barbeiros.find((b) => b._id === barbeiroSelecionado)?.nome || "",
-      },
+      barbeiro,
       servicos,
     };
 
@@ -35,7 +35,6 @@ export default function CardFila({
       console.log("Payload enviado:", payload);
       await axios.post(`${BASE_URL}/atendimentos`, payload);
       await axios.delete(`${BASE_URL}/checkin/${cliente._id}`);
-
       onAtendimentoFinalizado(cliente._id);
     } catch (err) {
       console.error("Erro ao finalizar atendimento:", err);
@@ -55,7 +54,7 @@ export default function CardFila({
         </p>
       </div>
 
-      {/* Lista de serviços */}
+      {/* Serviços */}
       <div className="space-y-1">
         {servicos.length === 0 ? (
           <p className="text-sm text-slate-500 italic">
@@ -79,6 +78,16 @@ export default function CardFila({
       >
         Adicionar Serviço
       </button>
+
+      {/* Barbeiro escolhido pelo cliente */}
+      {cliente.barbeiro && (
+        <div className="text-sm text-slate-500 mb-1">
+          Escolhido pelo cliente:{" "}
+          <span className="font-semibold text-slate-700 dark:text-slate-300">
+            {cliente.barbeiro.nome}
+          </span>
+        </div>
+      )}
 
       {/* Seleção de barbeiro */}
       <select
@@ -129,3 +138,4 @@ export default function CardFila({
     </div>
   );
 }
+
