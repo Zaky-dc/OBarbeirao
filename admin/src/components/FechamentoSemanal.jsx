@@ -62,6 +62,7 @@ export default function FechamentoSemanal() {
         barbeiroId: atendimento.barbeiro._id,
         nome: atendimento.barbeiro.nome,
         valor: atendimento.valorTotal * TAXA_FIXA,
+        valorTotalMes: atendimento.valorTotal * TAXA_FIXA,
         pago: true,
         dataPagamento: new Date(),
         atendimentoId: atendimento._id,
