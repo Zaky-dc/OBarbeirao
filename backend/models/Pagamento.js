@@ -59,8 +59,8 @@ const PagamentoSchema = new mongoose.Schema({
     fim: { type: String, required: true },
   },
   barbeiros: [BarbeiroPagamentoSchema],
-  despesas: {[DespesaSchema],required:false,default:[]},
-  admin: {AdminSchema,required:false},
+  despesas: [DespesaSchema],
+  admin: AdminSchema,
   totalBruto: { type: Number, required: true },
   totalLiquido: { type: Number, required: true },
 });
