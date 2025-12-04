@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Checkin = require("../models/Checkin");
+const corsMiddleware = require("../middleware/cors"); // <--- IMPORTAR
+
+// APLICAR CORS
+router.use(corsMiddleware); // <--- APLICAR
 
 // 🔹 POST /checkin → criar novo agendamento
 router.post("/", async (req, res) => {
