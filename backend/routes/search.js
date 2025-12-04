@@ -2,6 +2,10 @@ const express = require("express");
 const Atendimento = require("../models/Atendimento");
 const Checkin = require("../models/Checkin");
 // const Agendamento = require("../models/Agendamento");
+const corsMiddleware = require("../middleware/cors"); // <--- IMPORTAR
+
+// APLICAR CORS
+router.use(corsMiddleware); // <--- APLICAR
 
 const router = express.Router();
 
