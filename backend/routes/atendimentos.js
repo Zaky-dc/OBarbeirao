@@ -1,11 +1,9 @@
 const express = require("express");
 const Atendimento = require("../models/Atendimento.js");
 const corsMiddleware = require("../middleware/cors"); // <--- IMPORTAR
-
+const router = express.Router();
 // APLICAR CORS
 router.use(corsMiddleware); // <--- APLICAR
-
-const router = express.Router();
 
 // GET /atendimentos - listar todos os atendimentos
 router.get("/", async (req, res) => {
