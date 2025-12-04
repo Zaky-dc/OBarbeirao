@@ -59,10 +59,9 @@ export default function FechamentoSemanal() {
       );
 
       const dadosBarbeiro = {
-        barbeiroId: atendimento.barbeiro._id,
+       barbeiroId: atendimento.barbeiro._id,
         nome: atendimento.barbeiro.nome,
-        valor: atendimento.valorTotal * TAXA_FIXA,
-       
+        valorTotalMes: atendimento.valorTotal * TAXA_FIXA, 
         pago: true,
         dataPagamento: new Date(),
         atendimentoId: atendimento._id,
@@ -105,7 +104,7 @@ export default function FechamentoSemanal() {
           periodo: semanaAtual,
           barbeiros: [dadosBarbeiro],
           totalBruto: atendimento.valorTotal,
-          totalLiquido: dadosBarbeiro.valor,
+          totalLiquido: dadosBarbeiro.valorTotalMes,
         };
         const res = await axios.post(`${BASE_URL}/pagamentos`, novo);
 
