@@ -1,47 +1,54 @@
-const express = require("express");
-const Atendimento = require("../models/Atendimento");
-const Checkin = require("../models/Checkin");
-// const Agendamento = require("../models/Agendamento");
-const corsMiddleware = require("../middleware/cors"); // <--- IMPORTAR
+import mongoose from "mongoose";
+import Atendimento from "../models/Atendimento.js";
+import Checkin from "../models/Checkin.js";
 
-// APLICAR CORS
-router.use(corsMiddleware); // <--- APLICAR
+// Conectar ao MongoDB usando variável de ambiente
+mongoose.connect(process.env.MONGO_URI);
 
-const router = express.Router();
-
-router.get("/search", async (req, res) => {
-  const { query } = req.query;
-  const regex = { $regex: query, $options: "i" };
-
-  try {
-    const atendimentos = await Atendimento.find({
-      $or: [
-        { "cliente.nome": regex },
-        { "cliente.telefone": regex },
-        { "barbeiro.nome": regex },
-        { "servicos.nome": regex },
-      ],
-    });
-
-const checkins = await Checkin.find({
-      $and: [
-        { origem: "online" }, // ✅ filtra apenas agendamentos online
-        {
-          $or: [
-            { nome: regex },
-            { telefone: regex },
-            { servicos: { $elemMatch: { nome: regex } } },
-          ],
-        },
-      ],
-    });
-
-    res.json({ atendimentos, agendamentosOnline: checkins });
-  } catch (error) {
-    console.error("Erro na busca:", error);
-    res.status(500).json({ erro: "Erro ao buscar dados" });
+export default async function handler(req, res) {
+  // 1. TRATAMENTO DO PREFLIGHT (OPTIONS)
+  if (req.method === "OPTIONS") {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    return res.status(200).end();
   }
-});
 
+  // 2. GET /api/search → busca atendimentos e agendamentos online
+  if (req.method === "GET" && req.url.includes("/search")) {
+    const { query } = req.query;
+    const regex = { $regex: query, $options: "i" };
 
-module.exports = router;
+    try {
+      const atendimentos = await Atendimento.find({
+        $or: [
+          { "cliente.nome": regex },
+          { "cliente.telefone": regex },
+          { "barbeiro.nome": regex },
+          { "servicos.nome": regex },
+        ],
+      });
+
+      const checkins = await Checkin.find({
+        $and: [
+          { origem: "online" }, // apenas agendamentos online
+          {
+            $or: [
+              { nome: regex },
+              { telefone: regex },
+              { servicos: { $elemMatch: { nome: regex } } },
+            ],
+          },
+        ],
+      });
+
+      return res.status(200).json({ atendimentos, agendamentosOnline: checkins });
+    } catch (error) {
+      console.error("Erro na busca:", error);
+      return res.status(500).json({ erro: "Erro ao buscar dados" });
+    }
+  }
+
+  // 3. MÉTODO NÃO SUPORTADO
+  return res.status(405).end();
+}
