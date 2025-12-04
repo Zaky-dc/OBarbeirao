@@ -1,6 +1,10 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const Pagamento = require("../models/Pagamento");
+const corsMiddleware = require("../middleware/cors"); // <--- IMPORTAR
+
+// APLICAR CORS
+router.use(corsMiddleware); // <--- APLICAR
 
 const router = express.Router();
 
