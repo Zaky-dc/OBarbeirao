@@ -18,8 +18,10 @@ const app = express();
 // Substitui a biblioteca 'cors' por um controle explícito.
 app.use((req, res, next) => {
   const allowedOrigins = [
-    "https://o-barbeirao-z8nt.vercel.app", // Deploy antigo
-    "https://o-barbeirao.vercel.app",      // Produção atual
+    "https://o-barbeirao-z8nt.vercel.app", // Deploy antigo (Admin)
+    "https://o-barbeirao.vercel.app",      // Produção Vercel
+    "https://www.barbeirao.com",           // [NOVO] Domínio Oficial (com www)
+    "https://barbeirao.com",               // [NOVO] Domínio Oficial (sem www)
     "http://localhost:5173",               // Vite local
     "http://localhost:3000"                // Outro local
   ];
@@ -29,7 +31,11 @@ app.use((req, res, next) => {
   // 1. Verifica se a origem do pedido está na nossa lista branca
   if (allowedOrigins.includes(origin)) {
     res.setHeader("Access-Control-Allow-Origin", origin);
-  } 
+  } else {
+    // Opcional: Se quiseres depurar o que está a chegar
+    // console.log("Origem bloqueada ou vazia:", origin);
+  }
+  
   // (Opcional) Se quiser permitir ferramentas como Postman que não enviam origin:
   // else if (!origin) { res.setHeader("Access-Control-Allow-Origin", "*"); }
 
@@ -63,7 +69,9 @@ const connectToDatabase = async () => {
     console.log("=> MongoDB conectado");
   } catch (err) {
     console.error("❌ Erro MongoDB:", err);
-    throw err;
+    // NÃO lançar erro aqui (throw err) para não crashar o processo abruptamente.
+    // Deixamos o middleware abaixo lidar com a resposta de erro.
+    throw err; 
   }
 };
 
@@ -77,6 +85,7 @@ app.use(async (req, res, next) => {
     console.error("Falha na conexão DB");
     // Verifica se os cabeçalhos já foram enviados para evitar erro duplo
     if (!res.headersSent) {
+      // Retorna JSON para garantir que o cliente recebe os headers CORS configurados acima
       res.status(500).json({ error: "Erro de conexão com o banco de dados" });
     }
   }
