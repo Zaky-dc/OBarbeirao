@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Servico = require("../models/Servico");
+const corsMiddleware = require("../middleware/cors"); // <--- IMPORTAR
+
+// APLICAR CORS
+router.use(corsMiddleware); // <--- APLICAR
 
 // GET /servicos
 router.get("/", async (req, res) => {
