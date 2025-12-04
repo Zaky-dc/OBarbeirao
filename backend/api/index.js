@@ -1,7 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
+// const cors = require("cors"); // Removido para usar lógica manual
 
 const adminRoutes = require("../routes/admin");
 const atendimentoRoutes = require("../routes/atendimentos");
@@ -14,31 +14,39 @@ const galeriaRoutes = require("../routes/galeria");
 
 const app = express();
 
-// --- CONFIGURAÇÃO CORS DINÂMICA (Múltiplos Domínios) ---
-const allowedOrigins = [
-  "https://o-barbeirao-z8nt.vercel.app", // Link antigo/deploy de preview
-  "https://o-barbeirao.vercel.app",      // Link de produção atual
-  "http://localhost:5173",               // Desenvolvimento local
-  "http://localhost:3000"                // Desenvolvimento local alternativo
-];
+// --- CONFIGURAÇÃO CORS MANUAL E ROBUSTA ---
+// Substitui a biblioteca 'cors' por um controle explícito.
+app.use((req, res, next) => {
+  const allowedOrigins = [
+    "https://o-barbeirao-z8nt.vercel.app", // Deploy antigo
+    "https://o-barbeirao.vercel.app",      // Produção atual
+    "http://localhost:5173",               // Vite local
+    "http://localhost:3000"                // Outro local
+  ];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    // Permitir pedidos sem origem (como Postman ou Apps Móveis nativas)
-    if (!origin) return callback(null, true);
-    
-    // Verifica se a origem está na lista permitida
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.error("Bloqueado por CORS:", origin);
-      callback(new Error('Bloqueado pela política de CORS'));
-    }
-  },
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-  credentials: true
-}));
+  const origin = req.headers.origin;
+
+  // 1. Verifica se a origem do pedido está na nossa lista branca
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } 
+  // (Opcional) Se quiser permitir ferramentas como Postman que não enviam origin:
+  // else if (!origin) { res.setHeader("Access-Control-Allow-Origin", "*"); }
+
+  // 2. Define os outros cabeçalhos essenciais
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  // 3. TRATAMENTO IMEDIATO DO PREFLIGHT (OPTIONS)
+  // Se for uma verificação de CORS, responde OK aqui e morre.
+  // Não passa para o banco de dados nem para as rotas.
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
 
 app.use(express.json());
 
@@ -59,22 +67,18 @@ const connectToDatabase = async () => {
   }
 };
 
-// --- MIDDLEWARE INTELIGENTE ---
+// --- MIDDLEWARE DE CONEXÃO AO BANCO ---
+// Apenas roda se NÃO for OPTIONS (já tratado acima)
 app.use(async (req, res, next) => {
-  // 🛠️ 1. TRATAMENTO DO PREFLIGHT (OPTIONS) 🛠️
-  // O middleware 'cors' acima JÁ respondeu com os headers corretos.
-  // Aqui apenas garantimos que a execução pare e retorne 200 OK sem tocar no banco.
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  // 🛠️ 2. CONEXÃO AO BANCO APENAS PARA PEDIDOS REAIS
   try {
     await connectToDatabase();
     next(); 
   } catch (err) {
     console.error("Falha na conexão DB");
-    res.status(500).json({ error: "Erro de conexão com o banco de dados" });
+    // Verifica se os cabeçalhos já foram enviados para evitar erro duplo
+    if (!res.headersSent) {
+      res.status(500).json({ error: "Erro de conexão com o banco de dados" });
+    }
   }
 });
 
