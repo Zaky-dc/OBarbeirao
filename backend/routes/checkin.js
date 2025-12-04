@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Checkin = require("../models/Checkin");
 const corsMiddleware = require("../middleware/cors"); // <--- IMPORTAR
-
+const router = express.Router();
 // APLICAR CORS
 router.use(corsMiddleware); // <--- APLICAR
 
