@@ -3,6 +3,10 @@ const Barbeiro = require("../models/Barbeiro");
 const Atendimento = require("../models/Atendimento");
 // Importa o middleware de autenticação (verifique se o caminho do arquivo é exato)
 const authMiddleware = require("../middleware/autenticao"); 
+const corsMiddleware = require("../middleware/cors"); // <--- IMPORTAR
+
+// APLICAR CORS
+router.use(corsMiddleware); // <--- APLICAR
 
 const router = express.Router();
 
