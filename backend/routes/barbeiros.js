@@ -4,11 +4,9 @@ const Atendimento = require("../models/Atendimento");
 // Importa o middleware de autenticação (verifique se o caminho do arquivo é exato)
 const authMiddleware = require("../middleware/autenticao"); 
 const corsMiddleware = require("../middleware/cors"); // <--- IMPORTAR
-
+const router = express.Router();
 // APLICAR CORS
 router.use(corsMiddleware); // <--- APLICAR
-
-const router = express.Router();
 
 // Rota pública: Listar barbeiros (usado no select do agendamento, etc)
 router.get("/", async (req, res) => {
