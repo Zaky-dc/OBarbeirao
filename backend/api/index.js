@@ -14,41 +14,50 @@ const galeriaRoutes = require("../routes/galeria");
 
 const app = express();
 
-// --- CORREÇÃO CORS ---
-// Permite que o frontend aceda ao backend sem bloqueios
+// --- CONFIGURAÇÃO CORS ---
+// Define a origem exata do frontend para permitir credenciais/cookies
 app.use(cors({
-  origin: "*", // Permite todas as origens.
+  origin: "https://o-barbeirao-z8nt.vercel.app", 
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true
 }));
 
 app.use(express.json());
 
-// --- OTIMIZAÇÃO CONEXÃO MONGODB (SERVERLESS) ---
-// Variável global para manter a conexão ativa entre chamadas na Vercel
+// --- OTIMIZAÇÃO CONEXÃO (Lógica Global) ---
 let isConnected = false;
 
 const connectToDatabase = async () => {
-  if (isConnected) {
-    return;
-  }
-
+  if (isConnected) return;
   try {
     const db = await mongoose.connect(process.env.MONGO_URI, {
       serverSelectionTimeoutMS: 5000,
     });
-    
     isConnected = db.connections[0].readyState;
     console.log("=> MongoDB conectado");
   } catch (err) {
-    console.error("Erro ao conectar MongoDB:", err);
+    console.error("❌ Erro MongoDB:", err);
+    throw err;
   }
 };
 
-// Middleware para garantir conexão antes de qualquer rota
+// --- MIDDLEWARE INTELIGENTE (A TUA SUGESTÃO APLICADA GLOBALMENTE) ---
 app.use(async (req, res, next) => {
-  await connectToDatabase();
-  next();
+  // 🛠️ 1. TRATAMENTO DO PREFLIGHT (OPTIONS) 🛠️
+  // Exatamente como no teu exemplo: mata o pedido aqui se for apenas verificação CORS.
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
+  // 🛠️ 2. CONEXÃO AO BANCO APENAS PARA PEDIDOS REAIS (GET, POST, ETC)
+  try {
+    await connectToDatabase();
+    next(); // Passa para as rotas
+  } catch (err) {
+    console.error("Falha na conexão DB");
+    res.status(500).json({ error: "Erro de conexão com o banco de dados" });
+  }
 });
 
 // --- ROTAS ---
