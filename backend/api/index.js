@@ -14,41 +14,44 @@ const galeriaRoutes = require("../routes/galeria");
 
 const app = express();
 
-app.use(cors());
+// --- CORREÇÃO CORS ---
+// Permite que o frontend aceda ao backend sem bloqueios
+app.use(cors({
+  origin: "*", // Permite todas as origens.
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
 app.use(express.json());
 
+// --- OTIMIZAÇÃO CONEXÃO MONGODB (SERVERLESS) ---
+// Variável global para manter a conexão ativa entre chamadas na Vercel
 let isConnected = false;
 
 const connectToDatabase = async () => {
   if (isConnected) {
-    console.log("=> Usando conexão de banco de dados existente");
     return;
   }
 
   try {
     const db = await mongoose.connect(process.env.MONGO_URI, {
-      // Opções recomendadas para evitar timeouts
-      serverSelectionTimeoutMS: 5000, 
+      serverSelectionTimeoutMS: 5000,
     });
+    
     isConnected = db.connections[0].readyState;
-    console.log("=> Nova conexão com banco de dados estabelecida");
+    console.log("=> MongoDB conectado");
   } catch (err) {
-    console.error("Erro ao conectar ao MongoDB:", err);
-    throw err; // Lança o erro para que a requisição falhe explicitamente se não houver DB
+    console.error("Erro ao conectar MongoDB:", err);
   }
 };
 
-// Middleware para garantir conexão antes das rotas
+// Middleware para garantir conexão antes de qualquer rota
 app.use(async (req, res, next) => {
-  try {
-    await connectToDatabase();
-    next();
-  } catch (err) {
-    res.status(500).json({ error: "Erro de conexão com o banco de dados" });
-  }
+  await connectToDatabase();
+  next();
 });
 
-// Rotas
+// --- ROTAS ---
 app.use("/api/servicos", servicoRoutes);
 app.use("/api/checkin", checkinRoutes);
 app.use("/api/admin", adminRoutes);
