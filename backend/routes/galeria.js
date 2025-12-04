@@ -1,11 +1,9 @@
 const express = require("express");
 const Galeria = require("../models/Galeria");
 const corsMiddleware = require("../middleware/cors"); // <--- IMPORTAR
-
+const router = express.Router();
 // APLICAR CORS
 router.use(corsMiddleware); // <--- APLICAR
-
-const router = express.Router();
 
 // Criar nova foto (recebe só a URL do Cloudinary)
 router.post("/", async (req, res) => {
