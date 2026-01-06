@@ -29,8 +29,10 @@ app.use(
 app.use(express.json());
 
 // Conexão MongoDB
+const MONGO_URI =
+  "mongodb+srv://zakirmagide:Zakydc19@cluster0.nrmjy3n.mongodb.net/?appName=Cluster0";
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(MONGO_URI)
   .then(() => console.log("✅ MongoDB conectado"))
   .catch((err) => console.error("❌ Erro ao conectar:", err));
 
