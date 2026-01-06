@@ -35,6 +35,21 @@ mongoose
   .catch((err) => console.error("❌ Erro ao conectar:", err));
 
 // Rotas
+app.get("/api/health-check", (req, res) => {
+  const dbState = mongoose.connection.readyState;
+  const dbStateMap = {
+    0: "Disconnected",
+    1: "Connected",
+    2: "Connecting",
+    3: "Disconnecting",
+  };
+  res.status(200).json({
+    status: "ok",
+    dbState: dbStateMap[dbState] || "Unknown",
+    envMongo: !!process.env.MONGO_URI, // Returns true/false, not the actual URI
+  });
+});
+
 app.use("/api/servicos", servicoRoutes);
 app.use("/api/checkin", checkinRoutes);
 app.use("/api/admin", adminRoutes);
