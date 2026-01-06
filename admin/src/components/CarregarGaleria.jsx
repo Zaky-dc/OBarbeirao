@@ -1,19 +1,25 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-export default function CarregarGaleria() {
-  const [fotos, setFotos] = useState([]);
-  const [imagem, setImagem] = useState(null);
-  const [loading, setLoading] = useState(false); // estado de carregamento
+import API_BASE_URL from "../config";
 
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
-   const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
+export default function CarregarGaleria() {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+  const [loading, setLoading] = useState(false); // estado de carregamento
+  const [fotos, setFotos] = useState([]); // lista de fotos da galeria
+  const [imagem, setImagem] = useState(null); // imagem selecionada para upload
+  const [message, setMessage] = useState("");
+  const BASE_URL = API_BASE_URL;
+  const CLOUDINARY_URL =
+    "https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
   const CLOUDINARY_PRESET = "whpm5cwd";
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/galeria`)
-      .then(res => setFotos(res.data))
-      .catch(err => console.error("Erro ao carregar galeria:", err));
+    axios
+      .get(`${BASE_URL}/galeria`)
+      .then((res) => setFotos(res.data))
+      .catch((err) => console.error("Erro ao carregar galeria:", err));
   }, []);
 
   const enviarFoto = async () => {
@@ -59,7 +65,9 @@ export default function CarregarGaleria() {
           onClick={enviarFoto}
           disabled={loading}
           className={`px-4 py-2 rounded text-white ${
-            loading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-green-600 hover:bg-green-700"
           }`}
         >
           {loading ? "Carregando..." : "Upload"}
@@ -109,9 +117,10 @@ export default function CarregarGaleria() {
             {/* Botão apagar visível só no hover */}
             <button
               onClick={() => {
-                axios.delete(`${BASE_URL}/galeria/${foto._id}`)
+                axios
+                  .delete(`${BASE_URL}/galeria/${foto._id}`)
                   .then(() => setFotos(fotos.filter((f) => f._id !== foto._id)))
-                  .catch(err => console.error("Erro ao apagar foto:", err));
+                  .catch((err) => console.error("Erro ao apagar foto:", err));
               }}
               className="absolute top-2 right-2 bg-red-600 text-white px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity"
             >

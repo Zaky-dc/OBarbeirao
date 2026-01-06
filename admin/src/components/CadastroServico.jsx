@@ -1,16 +1,22 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom"; // Added for useNavigate hook
+
+import API_BASE_URL from "../config";
 
 export default function CadastroServico() {
   const [nome, setNome] = useState("");
   const [preco, setPreco] = useState("");
-  const [imagem, setImagem] = useState(null);
+  const [imagem, setImagem] = useState(""); // Changed from null to ""
+  const [categoria, setCategoria] = useState("Cabelo"); // Added
   const [preview, setPreview] = useState(null);
   const [enviando, setEnviando] = useState(false);
+  const navigate = useNavigate(); // Added
 
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
-  const CLOUDINARY_URL ="https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
-  const UPLOAD_PRESET ="whpm5cwd";
+  const BASE_URL = API_BASE_URL; // Changed
+  const CLOUDINARY_URL =
+    "https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
+  const UPLOAD_PRESET = "whpm5cwd";
 
   const handleSelecionar = (e) => {
     const file = e.target.files[0];
@@ -59,7 +65,9 @@ export default function CadastroServico() {
 
   return (
     <div className="max-w-md ml-4 md:ml-12 p-4 bg-white rounded shadow">
-      <h2 className="text-xl font-bold mb-4 text-zinc-800">Cadastrar novo serviço</h2>
+      <h2 className="text-xl font-bold mb-4 text-zinc-800">
+        Cadastrar novo serviço
+      </h2>
 
       <input
         type="text"

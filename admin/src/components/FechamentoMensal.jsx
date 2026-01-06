@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../config";
 
 export default function FechamentoMensal() {
   const [atendimentos, setAtendimentos] = useState([]);
@@ -13,22 +14,26 @@ export default function FechamentoMensal() {
   });
   const [mesAtual, setMesAtual] = useState("");
   const [assumirSemanais, setAssumirSemanais] = useState(false);
-
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+  const [mes, setMes] = useState(new Date().getMonth() + 1);
+  const [ano, setAno] = useState(new Date().getFullYear());
+  const [dados, setDados] = useState(null);
+  const BASE_URL = API_BASE_URL;
 
   useEffect(() => {
     const hoje = new Date();
     const mes = hoje.toISOString().slice(0, 7); // "2025-11"
     setMesAtual(mes);
 
-    axios.get(`${BASE_URL}/atendimentos`)
+    axios
+      .get(`${BASE_URL}/atendimentos`)
       .then((res) => {
         const filtrados = res.data.filter((a) => a.data?.startsWith(mes));
         setAtendimentos(filtrados);
       })
       .catch((err) => console.error("Erro ao buscar atendimentos:", err));
 
-    axios.get(`${BASE_URL}/pagamentos`)
+    axios
+      .get(`${BASE_URL}/pagamentos`)
       .then((res) => setPagamentos(res.data))
       .catch((err) => console.error("Erro ao buscar pagamentos:", err));
   }, []);
@@ -45,12 +50,14 @@ export default function FechamentoMensal() {
   );
 
   const jaPagoSemanal = semanais.reduce(
-    (acc, p) => acc + p.barbeiros.reduce((s, b) => s + (b.pago ? b.valor : 0), 0),
+    (acc, p) =>
+      acc + p.barbeiros.reduce((s, b) => s + (b.pago ? b.valor : 0), 0),
     0
   );
 
   const faltavaSemanal = semanais.reduce(
-    (acc, p) => acc + p.barbeiros.reduce((s, b) => s + (!b.pago ? b.valor : 0), 0),
+    (acc, p) =>
+      acc + p.barbeiros.reduce((s, b) => s + (!b.pago ? b.valor : 0), 0),
     0
   );
 
@@ -65,7 +72,8 @@ export default function FechamentoMensal() {
     0
   );
 
-  const totalLiquido = totalBruto - comissaoBarbeiros - salarioAdmin - totalDespesas;
+  const totalLiquido =
+    totalBruto - comissaoBarbeiros - salarioAdmin - totalDespesas;
 
   const registrarPagamentoMensal = async () => {
     try {

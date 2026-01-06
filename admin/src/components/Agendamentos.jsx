@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../config";
+import { useNavigate } from "react-router-dom";
 
-export default function Agendamentos() {
+const Agendamentos = () => {
   const [agendamentos, setAgendamentos] = useState([]);
+  const navigate = useNavigate();
   const [aba, setAba] = useState("pendentes");
   const [paginaAtual, setPaginaAtual] = useState(1);
   const itensPorPagina = 5;
@@ -13,7 +16,7 @@ export default function Agendamentos() {
     (paginaAtual - 1) * itensPorPagina,
     paginaAtual * itensPorPagina
   );
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+  const BASE_URL = API_BASE_URL;
 
   useEffect(() => {
     carregarAgendamentos();
@@ -33,7 +36,7 @@ export default function Agendamentos() {
       .catch((err) => console.error("Erro ao atualizar agendamento:", err));
   };
 
- return (
+  return (
     <div className="space-y-6">
       <h1 className="text-2xl font-bold text-slate-800 dark:text-white">
         Agendamentos Online
@@ -62,69 +65,85 @@ export default function Agendamentos() {
         </button>
       </div>
 
-     {aba === "pendentes" && (
-  <>
-    {pendentes.length === 0 ? (
-      <div className="text-center text-slate-500 dark:text-slate-400 italic py-10">
-        Nenhum agendamento pendente no momento.
-      </div>
-    ) : (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {pendentes.map((a) => {
-          console.log("🔍 Barbeiro recebido:", a.barbeiro);
-
-          return (
-            <div
-              key={a._id}
-              className="bg-white dark:bg-slate-800 p-4 rounded shadow space-y-2"
-            >
-              <h2 className="text-lg font-bold">{a.nome}</h2>
-              <p>Telefone: <div className="text-green-800 font-bold">{a.telefone}</div></p>
-              <p>Horário: <div className="font-semibold">{new Date(a.horario).toLocaleString()}</div></p>
-              <p>Serviços: <div className="font-semibold">{a.servicos.map((s) => s.nome).join(", ")}</div></p>
-              <p>Corte com:</p>
-
-              <div className="flex items-center gap-2 mt-2">
-                {a.barbeiro && typeof a.barbeiro === "object" ? (
-                  <>
-                    <img
-                      src={a.barbeiro.imageUrl}
-                      alt={a.barbeiro.nome}
-                      className="w-8 h-8 rounded-full object-cover"
-                    />
-                    <span className="text-sm text-slate-700 dark:text-slate-300">
-                      <div className="font-semibold">{a.barbeiro.nome}</div>
-                    </span>
-                  </>
-                ) : (
-                  <span className="italic text-sm text-slate-500">
-                    Sem preferência
-                  </span>
-                )}
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  onClick={() => atualizarStatus(a._id, "aprovado")}
-                  className="bg-green-600 text-white px-3 py-1 rounded"
-                >
-                  Aprovar
-                </button>
-                <button
-                  onClick={() => atualizarStatus(a._id, "cancelado")}
-                  className="bg-red-600 text-white px-3 py-1 rounded"
-                >
-                  Cancelar
-                </button>
-              </div>
+      {aba === "pendentes" && (
+        <>
+          {pendentes.length === 0 ? (
+            <div className="text-center text-slate-500 dark:text-slate-400 italic py-10">
+              Nenhum agendamento pendente no momento.
             </div>
-          );
-        })}
-      </div>
-    )}
-  </>
-)}
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {pendentes.map((a) => {
+                console.log("🔍 Barbeiro recebido:", a.barbeiro);
 
+                return (
+                  <div
+                    key={a._id}
+                    className="bg-white dark:bg-slate-800 p-4 rounded shadow space-y-2"
+                  >
+                    <h2 className="text-lg font-bold">{a.nome}</h2>
+                    <div>
+                      Telefone:{" "}
+                      <div className="text-green-800 font-bold">
+                        {a.telefone}
+                      </div>
+                    </div>
+                    <div>
+                      Horário:{" "}
+                      <div className="font-semibold">
+                        {new Date(a.horario).toLocaleString()}
+                      </div>
+                    </div>
+                    <div>
+                      Serviços:{" "}
+                      <div className="font-semibold">
+                        {a.servicos.map((s) => s.nome).join(", ")}
+                      </div>
+                    </div>
+                    <p>Corte com:</p>
+
+                    <div className="flex items-center gap-2 mt-2">
+                      {a.barbeiro && typeof a.barbeiro === "object" ? (
+                        <>
+                          <img
+                            src={a.barbeiro.imageUrl}
+                            alt={a.barbeiro.nome}
+                            className="w-8 h-8 rounded-full object-cover"
+                          />
+                          <span className="text-sm text-slate-700 dark:text-slate-300">
+                            <div className="font-semibold">
+                              {a.barbeiro.nome}
+                            </div>
+                          </span>
+                        </>
+                      ) : (
+                        <span className="italic text-sm text-slate-500">
+                          Sem preferência
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => atualizarStatus(a._id, "aprovado")}
+                        className="bg-green-600 text-white px-3 py-1 rounded"
+                      >
+                        Aprovar
+                      </button>
+                      <button
+                        onClick={() => atualizarStatus(a._id, "cancelado")}
+                        className="bg-red-600 text-white px-3 py-1 rounded"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </>
+      )}
 
       {aba === "historico" && (
         <div className="space-y-3 pr-2 md:pr-8 lg:pr-16 xl:pr-24">
@@ -205,4 +224,6 @@ export default function Agendamentos() {
       )}
     </div>
   );
-}
+};
+
+export default Agendamentos;

@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function Catalogo({ carrinho, setCarrinho }) {
+import API_BASE_URL from "../config";
+
+export default function Catalogo() {
   const [servicos, setServicos] = useState([]);
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
-   const BASE_URL =
-    import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
+  const [filtro, setFiltro] = useState("Todos");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [servicoSelecionado, setServicoSelecionado] = useState(null);
+  const BASE_URL = API_BASE_URL;
 
   useEffect(() => {
     axios
@@ -17,7 +21,6 @@ export default function Catalogo({ carrinho, setCarrinho }) {
       .catch((err) => console.error("Erro ao carregar catálogo:", err));
   }, []);
 
-  
   function adicionarAoCarrinho(servico) {
     const jaExiste = carrinho.find((s) => s._id === servico._id);
     if (!jaExiste) {

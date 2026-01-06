@@ -11,19 +11,20 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSidebar } from "../context/SidebarContext";
 import { useEffect } from "react";
+import API_BASE_URL from "../config";
 
 const Header = () => {
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
   const { toggleSidebar } = useSidebar();
   const [query, setQuery] = useState("");
-   const [username, setUsername] = useState(""); 
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+  const [username, setUsername] = useState("");
+  const BASE_URL = API_BASE_URL;
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
-   useEffect(() => {
+  useEffect(() => {
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
       if (!token) return;
@@ -40,7 +41,6 @@ const Header = () => {
     };
     fetchUser();
   }, []);
-
 
   const handleSearch = () => {
     if (!query.trim()) return;
@@ -113,7 +113,9 @@ const Header = () => {
                 className="w-8 h-8 rounded-full ring-2 ring-blue-500 object-cover"
               />
               <div className="hidden md:block text-left">
-                <p className="text-sm font-medium">{username || "Carregando..."}</p>
+                <p className="text-sm font-medium">
+                  {username || "Carregando..."}
+                </p>
                 <p className="text-xs">Admin</p>
               </div>
 

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+import API_BASE_URL from "../config";
+import { useAuth } from "../context/AuthContext";
 
 export default function Relatorio() {
   const [filtros, setFiltros] = useState({
@@ -11,7 +13,9 @@ export default function Relatorio() {
     data: "",
   });
   const [resultados, setResultados] = useState([]);
-  const BASE_URL = "https://o-barbeirao-back.vercel.app/api";
+  const [stats, setStats] = useState(null);
+  const { logado } = useAuth();
+  const BASE_URL = API_BASE_URL;
 
   const buscar = () => {
     const params = new URLSearchParams();

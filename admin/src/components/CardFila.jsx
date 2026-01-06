@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import Catalogo from "./Catalogo";
+import API_BASE_URL from "../config";
 
 export default function CardFila({
   cliente,
@@ -13,7 +14,7 @@ export default function CardFila({
     cliente.barbeiro?._id || ""
   );
   const [modalAberto, setModalAberto] = useState(false);
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+  const BASE_URL = API_BASE_URL;
   const handleFinalizar = async () => {
     if (!barbeiroSelecionado || servicos.length === 0) {
       alert("Selecione pelo menos um serviço e um barbeiro.");
@@ -138,4 +139,3 @@ export default function CardFila({
     </div>
   );
 }
-

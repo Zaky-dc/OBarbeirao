@@ -10,9 +10,11 @@ const BarbeiroPagamentoSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  valor: {
+    type: Number, // Para pagamentos semanais ou avulsos
+  },
   valorTotalMes: {
-    type: Number, // total da comissão do barbeiro no mês
-    required: true,
+    type: Number, // total da comissão do barbeiro no mês (para fechamento mensal)
   },
   jaPagoSemanal: {
     type: Number, // quanto já foi pago nos fechamentos semanais

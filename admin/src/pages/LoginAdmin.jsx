@@ -4,13 +4,15 @@ import { useNavigate } from "react-router-dom";
 import { Scissors, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
+import API_BASE_URL from "../config";
+
 export default function LoginAdmin() {
   const [username, setUsername] = useState("");
   const [senha, setSenha] = useState("");
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const navigate = useNavigate();
   const { setLogado } = useAuth();
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+  const BASE_URL = API_BASE_URL;
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -39,7 +41,10 @@ export default function LoginAdmin() {
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
         <form onSubmit={handleLogin} className="space-y-6">
           <div>
-            <label htmlFor="username" className="block text-sm font-medium text-gray-100">
+            <label
+              htmlFor="username"
+              className="block text-sm font-medium text-gray-100"
+            >
               Usuário
             </label>
             <div className="mt-2">
@@ -55,7 +60,10 @@ export default function LoginAdmin() {
           </div>
 
           <div>
-            <label htmlFor="senha" className="block text-sm font-medium text-gray-100">
+            <label
+              htmlFor="senha"
+              className="block text-sm font-medium text-gray-100"
+            >
               Senha
             </label>
             <div className="mt-2 relative">

@@ -1,28 +1,50 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-export default function ExtratoFinanceiro() {
-  const [pagamentos, setPagamentos] = useState([]);
-  const [mesSelecionado, setMesSelecionado] = useState("");
+import API_BASE_URL from "../config";
 
- const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+export default function ExtratoFinanceiro() {
+  const [transacoes, setTransacoes] = useState([]);
+  const [resumo, setResumo] = useState({
+    total_receitas: 0,
+    total_despesas: 0,
+    saldo: 0,
+  });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [novaTransacao, setNovaTransacao] = useState({
+    tipo: "entrada",
+    valor: "",
+    descricao: "",
+  });
+  const [mesSelecionado, setMesSelecionado] = useState("");
+  const BASE_URL = API_BASE_URL;
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/pagamentos`)
-      .then((res) => setPagamentos(res.data))
+    axios
+      .get(`${BASE_URL}/pagamentos`)
+      .then((res) => setTransacoes(res.data))
       .catch((err) => console.error("Erro ao buscar extrato:", err));
   }, []);
 
-  const filtrados = pagamentos.filter((p) =>
+  const filtrados = transacoes.filter((p) =>
     mesSelecionado ? p.periodo.inicio?.startsWith(mesSelecionado) : true
   );
 
   const totalBruto = filtrados.reduce((acc, p) => acc + (p.totalBruto || 0), 0);
-  const totalComissao = filtrados.reduce((acc, p) =>
-    acc + (p.barbeiros?.reduce((s, b) => s + (b.valor || 0), 0) || 0), 0);
-  const totalAdmin = filtrados.reduce((acc, p) => acc + (p.admin?.valor || 0), 0);
-  const totalDespesas = filtrados.reduce((acc, p) =>
-    acc + (p.despesas?.reduce((s, d) => s + (d.valor || 0), 0) || 0), 0);
+  const totalComissao = filtrados.reduce(
+    (acc, p) =>
+      acc + (p.barbeiros?.reduce((s, b) => s + (b.valor || 0), 0) || 0),
+    0
+  );
+  const totalAdmin = filtrados.reduce(
+    (acc, p) => acc + (p.admin?.valor || 0),
+    0
+  );
+  const totalDespesas = filtrados.reduce(
+    (acc, p) =>
+      acc + (p.despesas?.reduce((s, d) => s + (d.valor || 0), 0) || 0),
+    0
+  );
   const totalLiquido = totalBruto - totalComissao - totalAdmin - totalDespesas;
 
   return (
@@ -31,7 +53,9 @@ export default function ExtratoFinanceiro() {
 
       {/* Filtro por mês */}
       <div className="flex gap-4 items-center">
-        <label className="text-sm font-medium text-slate-600">Filtrar por mês:</label>
+        <label className="text-sm font-medium text-slate-600">
+          Filtrar por mês:
+        </label>
         <input
           type="month"
           value={mesSelecionado}
@@ -52,15 +76,22 @@ export default function ExtratoFinanceiro() {
       {/* Lista de pagamentos */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
         {filtrados.map((p) => (
-          <div key={p._id} className="bg-white dark:bg-slate-800 p-4 rounded shadow space-y-2">
+          <div
+            key={p._id}
+            className="bg-white dark:bg-slate-800 p-4 rounded shadow space-y-2"
+          >
             <h3 className="text-lg font-bold text-slate-800 dark:text-white">
               {p.tipo === "semanal" ? "Pagamento Semanal" : "Pagamento Mensal"}
             </h3>
             <p className="text-sm text-slate-500">
               Período: {p.periodo.inicio} a {p.periodo.fim}
             </p>
-            <p className="text-sm text-slate-500">Total bruto: {p.totalBruto} MZN</p>
-            <p className="text-sm text-green-600">Liquidez: {p.totalLiquido} MZN</p>
+            <p className="text-sm text-slate-500">
+              Total bruto: {p.totalBruto} MZN
+            </p>
+            <p className="text-sm text-green-600">
+              Liquidez: {p.totalLiquido} MZN
+            </p>
 
             {/* Barbeiros */}
             {p.barbeiros?.length > 0 && (
@@ -83,7 +114,8 @@ export default function ExtratoFinanceiro() {
                 <ul>
                   {p.despesas.map((d, i) => (
                     <li key={i}>
-                      • {d.tipo}: {d.valor} MZN {d.observacao && `(${d.observacao})`}
+                      • {d.tipo}: {d.valor} MZN{" "}
+                      {d.observacao && `(${d.observacao})`}
                     </li>
                   ))}
                 </ul>

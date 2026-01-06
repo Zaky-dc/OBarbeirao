@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import API_BASE_URL from "../config";
 import QRCode from "react-qr-code";
 import { showToast } from "../components/toastManager";
 import ModalServicosCliente from "../components/ModalServicosCliente";
@@ -14,7 +15,7 @@ export default function CheckinPresencial() {
   const navigate = useNavigate();
 
   const CHECKIN_URL = "https://o-barbeirao.vercel.app";
-  const BASE_URL = "https://o-barbeirao-back.vercel.app/api";
+  const BASE_URL = API_BASE_URL;
   const url = `${CHECKIN_URL}/checkin-presencial`;
 
   const buscarFila = async () => {

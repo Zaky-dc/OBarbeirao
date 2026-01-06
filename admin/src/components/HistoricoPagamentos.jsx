@@ -2,11 +2,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 
-export default function PainelAuditoriaPagamentos() {
-  const [barbeiros, setBarbeiros] = useState([]);
-  const [pagamentos, setPagamentos] = useState([]);
+import API_BASE_URL from "../config";
 
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+export default function HistoricoPagamentos() {
+  const [pagamentos, setPagamentos] = useState([]);
+  const [barbeiros, setBarbeiros] = useState([]);
+  const [filtroData, setFiltroData] = useState("");
+  const [filtroTipo, setFiltroTipo] = useState("");
+  const [total, setTotal] = useState(0);
+  const BASE_URL = API_BASE_URL;
 
   useEffect(() => {
     const carregar = async () => {
@@ -86,9 +90,9 @@ export default function PainelAuditoriaPagamentos() {
     doc.text("Detalhes dos Pagamentos:", 20, 90);
     registros.forEach((r, i) => {
       doc.text(
-        `${i + 1}. ${r.tipo.toUpperCase()} (${r.periodo.inicio} → ${r.periodo.fim}) - ${r.valor} MZN - ${
-          r.pago ? "Pago" : "Pendente"
-        }`,
+        `${i + 1}. ${r.tipo.toUpperCase()} (${r.periodo.inicio} → ${
+          r.periodo.fim
+        }) - ${r.valor} MZN - ${r.pago ? "Pago" : "Pendente"}`,
         25,
         100 + i * 10
       );
@@ -139,7 +143,9 @@ export default function PainelAuditoriaPagamentos() {
           </div>
 
           {registros.length === 0 ? (
-            <p className="text-slate-500 italic">Nenhum pagamento registrado.</p>
+            <p className="text-slate-500 italic">
+              Nenhum pagamento registrado.
+            </p>
           ) : (
             <table className="w-full text-sm border border-slate-300 dark:border-slate-600">
               <thead className="bg-slate-100 dark:bg-slate-700">
@@ -162,7 +168,9 @@ export default function PainelAuditoriaPagamentos() {
                       {new Date(r.periodo.fim).toLocaleDateString("pt-PT")}
                     </td>
                     <td className="p-2 capitalize">{r.tipo}</td>
-                    <td className="p-2 text-right">{r.valor.toFixed(2)} MZN</td>
+                    <td className="p-2 text-right">
+                      {(r.valor || 0).toFixed(2)} MZN
+                    </td>
                     <td className="p-2 text-center">
                       {r.pago ? (
                         <span className="text-green-600 font-semibold">

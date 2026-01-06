@@ -12,21 +12,43 @@ const galeriaRoutes = require("../routes/galeria");
 
 const app = express();
 
-app.use(cors({
-  origin: [
-    "https://www.barbeirao.com",
-    "https://o-barbeirao-z8nt.vercel.app",
-    "http://localhost:5173",
-    "http://localhost:3000"
-  ],
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  credentials: true
-}));
+app.use((req, res, next) => {
+  console.log(`[DEBUG] Request from Origin: ${req.headers.origin}`);
+  next();
+});
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      const allowedOrigins = [
+        "https://www.barbeirao.com",
+        "https://o-barbeirao-z8nt.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://localhost:5176",
+      ];
+      if (
+        allowedOrigins.indexOf(origin) !== -1 ||
+        origin.includes("vercel.app")
+      ) {
+        callback(null, true);
+      } else {
+        console.log(`[CORS Blocked] Origin: ${origin}`);
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB conectado"))
-  .catch(err => console.error("Erro ao conectar:", err));
+  .catch((err) => console.error("Erro ao conectar:", err));
 
 app.use("/api/servicos", servicoRoutes);
 app.use("/api/checkin", require("../routes/checkin"));
@@ -36,6 +58,8 @@ app.use("/api/barbeiros", barbeiroRoutes);
 app.use("/api/", searchRoutes);
 app.use("/api/pagamentos", pagamentosRoutes);
 app.use("/api/galeria", galeriaRoutes);
-//  app.listen(3000)
-// ✅ ADD:
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, "0.0.0.0", () =>
+  console.log(`🚀 Servidor rodando na porta ${PORT}`)
+);
 module.exports = app;

@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../config";
 
-export default function FechamentoSemanal() {
+const FechamentoSemanal = () => {
   const [atendimentos, setAtendimentos] = useState([]);
   const [pagamentos, setPagamentos] = useState([]);
   const [semanaAtual, setSemanaAtual] = useState({ inicio: "", fim: "" });
+  const [dataInicio, setDataInicio] = useState("");
+  const [dataFim, setDataFim] = useState("");
+  const [dados, setDados] = useState(null);
 
-  const BASE_URL ="https://o-barbeirao-back.vercel.app/api";
+  const BASE_URL = API_BASE_URL;
   const TAXA_FIXA = 0.3;
 
   useEffect(() => {
@@ -22,7 +26,8 @@ export default function FechamentoSemanal() {
 
     setSemanaAtual({ inicio: inicioStr, fim: fimStr });
 
-    axios.get(`${BASE_URL}/atendimentos`)
+    axios
+      .get(`${BASE_URL}/atendimentos`)
       .then((res) => {
         const filtrados = res.data.filter((a) => {
           const dataStr = new Date(a.data).toISOString().slice(0, 10);
@@ -32,7 +37,8 @@ export default function FechamentoSemanal() {
       })
       .catch((err) => console.error("Erro ao buscar atendimentos:", err));
 
-    axios.get(`${BASE_URL}/pagamentos`)
+    axios
+      .get(`${BASE_URL}/pagamentos`)
       .then((res) => setPagamentos(res.data))
       .catch((err) => console.error("Erro ao buscar pagamentos:", err));
   }, []);
@@ -43,9 +49,7 @@ export default function FechamentoSemanal() {
         p.tipo === "semanal" &&
         p.periodo.inicio.slice(0, 10) === semanaAtual.inicio &&
         p.periodo.fim.slice(0, 10) === semanaAtual.fim &&
-        p.barbeiros.some((b) =>
-          b.atendimentoId === atendimentoId && b.pago
-        )
+        p.barbeiros.some((b) => b.atendimentoId === atendimentoId && b.pago)
     );
   };
 
@@ -75,7 +79,11 @@ export default function FechamentoSemanal() {
         if (jaExiste) {
           const res = await axios.patch(
             `${BASE_URL}/pagamentos/${pagamentoExistente._id}/barbeiro/${atendimento.barbeiro._id}`,
-            { pago: true, dataPagamento: new Date(), atendimentoId: atendimento._id }
+            {
+              pago: true,
+              dataPagamento: new Date(),
+              atendimentoId: atendimento._id,
+            }
           );
 
           // ✅ Atualiza estado local imediatamente
@@ -83,16 +91,28 @@ export default function FechamentoSemanal() {
             prev.map((p) => (p._id === res.data._id ? res.data : p))
           );
         } else {
-          const novosBarbeiros = [...pagamentoExistente.barbeiros, dadosBarbeiro];
-          const novoTotalBruto = novosBarbeiros.reduce((acc, b) => acc + b.valor / TAXA_FIXA, 0);
-          const novoTotalLiquido = novosBarbeiros.reduce((acc, b) => acc + b.valor, 0);
+          const novosBarbeiros = [
+            ...pagamentoExistente.barbeiros,
+            dadosBarbeiro,
+          ];
+          const novoTotalBruto = novosBarbeiros.reduce(
+            (acc, b) => acc + b.valor / TAXA_FIXA,
+            0
+          );
+          const novoTotalLiquido = novosBarbeiros.reduce(
+            (acc, b) => acc + b.valor,
+            0
+          );
 
-          const res = await axios.put(`${BASE_URL}/pagamentos/${pagamentoExistente._id}`, {
-            ...pagamentoExistente,
-            barbeiros: novosBarbeiros,
-            totalBruto: novoTotalBruto,
-            totalLiquido: novoTotalLiquido,
-          });
+          const res = await axios.put(
+            `${BASE_URL}/pagamentos/${pagamentoExistente._id}`,
+            {
+              ...pagamentoExistente,
+              barbeiros: novosBarbeiros,
+              totalBruto: novoTotalBruto,
+              totalLiquido: novoTotalLiquido,
+            }
+          );
 
           setPagamentos((prev) =>
             prev.map((p) => (p._id === res.data._id ? res.data : p))
@@ -122,7 +142,9 @@ export default function FechamentoSemanal() {
       </h2>
 
       {atendimentos.length === 0 ? (
-        <p className="text-slate-500 italic">Nenhum atendimento nesta semana.</p>
+        <p className="text-slate-500 italic">
+          Nenhum atendimento nesta semana.
+        </p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {atendimentos.map((a) => {
@@ -141,7 +163,9 @@ export default function FechamentoSemanal() {
                 <h3 className="text-lg font-bold text-slate-800 dark:text-white">
                   {a.barbeiro.nome}
                 </h3>
-                <p className="text-sm text-slate-500">Cliente: {a.cliente.nome}</p>
+                <p className="text-sm text-slate-500">
+                  Cliente: {a.cliente.nome}
+                </p>
                 <p className="text-sm text-slate-500">
                   Serviços: {a.servicos.map((s) => s.nome).join(", ")}
                 </p>
@@ -174,4 +198,6 @@ export default function FechamentoSemanal() {
       )}
     </div>
   );
-}
+};
+
+export default FechamentoSemanal;

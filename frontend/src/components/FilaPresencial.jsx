@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../config";
 import { Loader2 } from "lucide-react";
-
 
 export default function FilaPresencial() {
   const [fila, setFila] = useState([]);
   const [carregando, setCarregando] = useState(true);
-  const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
-  
+  const BASE_URL = API_BASE_URL;
 
   useEffect(() => {
     const carregarFila = async () => {
@@ -38,7 +37,9 @@ export default function FilaPresencial() {
             <Loader2 className="animate-spin w-6 h-6 text-amber-500" />
           </div>
         ) : fila.length === 0 ? (
-          <p className="text-center text-gray-400">Nenhum cliente na fila no momento.</p>
+          <p className="text-center text-gray-400">
+            Nenhum cliente na fila no momento.
+          </p>
         ) : (
           <ul className="space-y-4">
             {fila.map((pessoa, index) => (
@@ -47,9 +48,12 @@ export default function FilaPresencial() {
                 className="bg-zinc-800 p-4 rounded shadow flex justify-between items-center"
               >
                 <div>
-                  <p className="font-bold text-lg text-amber-400">{pessoa.nome}</p>
+                  <p className="font-bold text-lg text-amber-400">
+                    {pessoa.nome}
+                  </p>
                   <p className="text-sm text-gray-400">
-                    Entrou às {new Date(pessoa.horario).toLocaleTimeString("pt-MZ", {
+                    Entrou às{" "}
+                    {new Date(pessoa.horario).toLocaleTimeString("pt-MZ", {
                       hour: "2-digit",
                       minute: "2-digit",
                     })}

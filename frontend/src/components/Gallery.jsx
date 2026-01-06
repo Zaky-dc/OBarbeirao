@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../config";
 
 export default function Gallery() {
   const [fotos, setFotos] = useState([]);
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
 
-   const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
+  const BASE_URL = API_BASE_URL;
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/galeria`)
-      .then(res => setFotos(res.data))
-      .catch(err => console.error("Erro ao carregar galeria:", err));
+    axios
+      .get(`${BASE_URL}/galeria`)
+      .then((res) => setFotos(res.data))
+      .catch((err) => console.error("Erro ao carregar galeria:", err));
   }, []);
 
   return (

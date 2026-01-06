@@ -2,10 +2,15 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import API_BASE_URL from "../config";
+
 export default function EditarServico() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const BASE_URL = "https://o-barbeirao-back.vercel.app/api";
+  const [nome, setNome] = useState("");
+  const [preco, setPreco] = useState("");
+  const [categoria, setCategoria] = useState("Cabelo");
+  const BASE_URL = API_BASE_URL;
   const CLOUDINARY_URL =
     "https://api.cloudinary.com/v1_1/dxuvpkfbn/image/upload";
   const UPLOAD_PRESET = "whpm5cwd";

@@ -14,13 +14,25 @@ const galeriaRoutes = require("../routes/galeria");
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://www.barbeirao.com",
+      "https://o-barbeirao-z8nt.vercel.app",
+      "http://localhost:5173",
+      "http://localhost:3000",
+    ],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Conexão MongoDB
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB conectado"))
-  .catch(err => console.error("❌ Erro ao conectar:", err));
+  .catch((err) => console.error("❌ Erro ao conectar:", err));
 
 // Rotas
 app.use("/api/servicos", servicoRoutes);

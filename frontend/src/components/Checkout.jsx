@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import API_BASE_URL from "../config";
 import Toast from "./Toast";
 
 export default function Checkout({ carrinho, setCarrinho }) {
@@ -11,7 +12,7 @@ export default function Checkout({ carrinho, setCarrinho }) {
   const [toast, setToast] = useState(null);
   const [enviando, setEnviando] = useState(false);
 
-  const BASE_URL = import.meta.env.VITE_API_URL || "https://o-barbeirao-back.vercel.app/api";
+  const BASE_URL = API_BASE_URL;
   const total = carrinho.reduce((acc, s) => acc + s.preco, 0);
 
   const hoje = new Date();
@@ -78,7 +79,10 @@ export default function Checkout({ carrinho, setCarrinho }) {
 
           <ul className="mb-6 space-y-2 bg-zinc-800 p-4 rounded shadow">
             {carrinho.map((s) => (
-              <li key={s._id} className="flex justify-between border-b border-zinc-700 pb-2 text-amber-300">
+              <li
+                key={s._id}
+                className="flex justify-between border-b border-zinc-700 pb-2 text-amber-300"
+              >
                 <span>{s.nome}</span>
                 <span className="font-semibold">{s.preco} MZN</span>
               </li>
@@ -130,7 +134,9 @@ export default function Checkout({ carrinho, setCarrinho }) {
 
           {/* Seletor de barbeiro */}
           <div className="mb-6 space-y-3">
-            <h3 className="text-sm text-amber-400 font-semibold">Escolha o barbeiro:</h3>
+            <h3 className="text-sm text-amber-400 font-semibold">
+              Escolha o barbeiro:
+            </h3>
             <div className="flex flex-wrap gap-3">
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
@@ -144,9 +150,15 @@ export default function Checkout({ carrinho, setCarrinho }) {
               </label>
 
               {barbeiros.map((b) => {
-                const url = b.imageUrl.replace("/upload/", "/upload/q_auto,f_auto/");
+                const url = b.imageUrl.replace(
+                  "/upload/",
+                  "/upload/q_auto,f_auto/"
+                );
                 return (
-                  <label key={b._id} className="flex items-center gap-2 cursor-pointer">
+                  <label
+                    key={b._id}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
                     <input
                       type="radio"
                       name="barbeiro"
@@ -186,4 +198,3 @@ export default function Checkout({ carrinho, setCarrinho }) {
     </>
   );
 }
-
