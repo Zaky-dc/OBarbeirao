@@ -14,7 +14,7 @@ export default function CheckinPresencial() {
   const [checkinSelecionado, setCheckinSelecionado] = useState(null);
   const navigate = useNavigate();
 
-  const CHECKIN_URL = "https://o-barbeirao.vercel.app";
+  const CHECKIN_URL = window.location.origin;
   const BASE_URL = API_BASE_URL;
   const url = `${CHECKIN_URL}/checkin-presencial`;
 
@@ -34,7 +34,7 @@ export default function CheckinPresencial() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${BASE_URL}/checkin/checkin-presencial`, {
+      await axios.post(`${BASE_URL}/checkin/presencial`, {
         nome,
         telefone,
       });
