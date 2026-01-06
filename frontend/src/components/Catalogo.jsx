@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import API_BASE_URL from "../config";
 
-export default function Catalogo({ carrinho, setCarrinho }) {
+export default function Catalogo({ carrinho = [], setCarrinho }) {
   const [servicos, setServicos] = useState([]);
   const [imagemSelecionada, setImagemSelecionada] = useState(null);
   const BASE_URL = API_BASE_URL;

@@ -3,7 +3,7 @@ import axios from "axios";
 import API_BASE_URL from "../config";
 import QRCode from "react-qr-code";
 import { showToast } from "../components/toastManager";
-import ModalServicosCliente from "../components/ModalServicosCliente";
+import ModalServicosCliente from "./ModalServicosCliente";
 import { useNavigate } from "react-router-dom";
 
 export default function CheckinPresencial() {
